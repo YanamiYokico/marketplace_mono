@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { AppProviders } from "./providers";
+import { appConfig } from "@/shared/config/app-config";
+import { AppProviders } from "@/app/providers";
+import { Header } from "@/widgets/header";
 import "./styles/globals.css";
 
 const geistSans = localFont({
@@ -13,8 +15,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Marketplace",
-  description: "Marketplace web application",
+  title: appConfig.name,
+  description: appConfig.description,
 };
 
 export default function RootLayout({
@@ -24,8 +26,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <AppProviders>{children}</AppProviders>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
+      >
+        <AppProviders>
+          <Header />
+          {children}
+        </AppProviders>
       </body>
     </html>
   );

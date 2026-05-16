@@ -1,4 +1,4 @@
 export { apiFetch } from "./api";
-export { config } from "./config";
+export { appConfig } from "./config";
 export { cn } from "./lib";
-export { ThemeImage } from "./ui";
+export { Button, Input, Modal } from "./ui";
