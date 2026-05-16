@@ -10,6 +10,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@/app": ["./src/app/index.ts"],
       "@/app/*": ["./src/app/*"],
       "@/views/*": ["./src/views/*"],
       "@/widgets/*": ["./src/widgets/*"],
