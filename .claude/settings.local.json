@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"e:\\\\projects\\\\marketplace_mono\" -Force)",
+      "Bash(Select-Object Name, Mode)",
+      "Bash(Format-Table -AutoSize)",
+      "Bash(Find-Item -Path \"e:\\\\projects\\\\marketplace_mono\" -Name \"schema.prisma\" -ErrorAction SilentlyContinue)",
+      "Bash(Select-Object FullName)",
+      "Bash(Get-ChildItem -Path \"e:\\\\projects\\\\marketplace_mono\\\\apps\\\\api\\\\src\" -Recurse -File)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Sort-Object)",
+      "Bash(npx dotenv *)",
+      "PowerShell($env:DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/marketplace?schema=public\"; npx prisma migrate deploy --schema apps/api/prisma/schema.prisma)"
+    ]
+  }
+}

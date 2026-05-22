@@ -7,7 +7,9 @@ export async function apiFetch<T>(
   const response = await fetch(`${appConfig.apiUrl}${path}`, init);
 
   if (!response.ok) {
-    throw new Error(`API error: ${response.status}`);
+    const body = await response.json().catch(() => null);
+    const raw = body?.message ?? `Request failed (${response.status})`;
+    throw new Error(Array.isArray(raw) ? raw.join(", ") : String(raw));
   }
 
   return response.json() as Promise<T>;

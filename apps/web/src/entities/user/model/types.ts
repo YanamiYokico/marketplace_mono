@@ -2,6 +2,9 @@ export type User = {
   id: string;
   email: string;
   name: string;
+  isEmailVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type LoginCredentials = {
