@@ -9,15 +9,17 @@ import { Input } from "@/shared/ui/input";
 import { loginSchema, type LoginFormValues } from "../model/login-schema";
 
 type LoginFormProps = {
-  onSubmit?: (credentials: LoginCredentials) => void;
+  onSubmit?: (credentials: LoginCredentials) => Promise<void> | void;
   onSwitchToRegister?: () => void;
   switchHref?: string;
+  error?: string;
 };
 
 export function LoginForm({
   onSubmit,
   onSwitchToRegister,
   switchHref,
+  error,
 }: LoginFormProps) {
   const {
     register,
@@ -31,8 +33,8 @@ export function LoginForm({
     },
   });
 
-  const onValidSubmit = (values: LoginFormValues) => {
-    onSubmit?.(values);
+  const onValidSubmit = async (values: LoginFormValues) => {
+    await onSubmit?.(values);
   };
 
   return (
@@ -61,6 +63,11 @@ export function LoginForm({
           error={errors.password?.message}
           {...register("password")}
         />
+        {error && (
+          <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+            {error}
+          </p>
+        )}
         <Button type="submit" fullWidth disabled={isSubmitting}>
           {isSubmitting ? "Signing in…" : "Sign in"}
         </Button>

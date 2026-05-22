@@ -12,15 +12,17 @@ import {
 } from "../model/register-schema";
 
 type RegisterFormProps = {
-  onSubmit?: (credentials: RegisterCredentials) => void;
+  onSubmit?: (credentials: RegisterCredentials) => Promise<void> | void;
   onSwitchToLogin?: () => void;
   switchHref?: string;
+  error?: string;
 };
 
 export function RegisterForm({
   onSubmit,
   onSwitchToLogin,
   switchHref,
+  error,
 }: RegisterFormProps) {
   const {
     register,
@@ -36,8 +38,8 @@ export function RegisterForm({
     },
   });
 
-  const onValidSubmit = (values: RegisterFormValues) => {
-    onSubmit?.(values);
+  const onValidSubmit = async (values: RegisterFormValues) => {
+    await onSubmit?.(values);
   };
 
   return (
@@ -80,6 +82,11 @@ export function RegisterForm({
           error={errors.confirmPassword?.message}
           {...register("confirmPassword")}
         />
+        {error && (
+          <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+            {error}
+          </p>
+        )}
         <Button type="submit" fullWidth disabled={isSubmitting}>
           {isSubmitting ? "Creating account…" : "Create account"}
         </Button>
