@@ -8,6 +8,7 @@ export type CreateUserData = {
   password: string;
   emailVerificationToken: string;
   emailVerificationExpires: Date;
+  isEmailVerified?: boolean;
 };
 
 @Injectable()

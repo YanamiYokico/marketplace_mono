@@ -5,30 +5,31 @@ import * as nodemailer from 'nodemailer';
 @Injectable()
 export class MailService {
     private readonly logger = new Logger(MailService.name);
-    private readonly transporter: nodemailer.Transporter;
+    private transporter: nodemailer.Transporter | null = null;
 
-    constructor(private readonly configService: ConfigService) {
-        this.transporter = nodemailer.createTransport({
-            host: this.configService.getOrThrow<string>('MAIL_HOST'),
-            port: this.configService.getOrThrow<number>('MAIL_PORT'),
-            auth: {
-                user: this.configService.getOrThrow<string>('MAIL_USER'),
-                pass: this.configService.getOrThrow<string>('MAIL_PASS'),
-            },
-        });
+    constructor(private readonly configService: ConfigService) {}
+
+    private getTransporter(): nodemailer.Transporter {
+        if (!this.transporter) {
+            this.transporter = nodemailer.createTransport({
+                host: this.configService.getOrThrow<string>('MAIL_HOST'),
+                port: this.configService.getOrThrow<number>('MAIL_PORT'),
+                auth: {
+                    user: this.configService.getOrThrow<string>('MAIL_USER'),
+                    pass: this.configService.getOrThrow<string>('MAIL_PASS'),
+                },
+            });
+        }
+        return this.transporter;
     }
 
-    async sendVerificationEmail(
-        to: string,
-        name: string,
-        token: string,
-    ): Promise<void> {
+    async sendVerificationEmail(to: string, name: string, token: string): Promise<void> {
         const appUrl = this.configService.getOrThrow<string>('APP_URL');
-        const verifyUrl = `${appUrl}/auth/verify-email?token=${token}`;
         const from = this.configService.getOrThrow<string>('MAIL_FROM');
+        const verifyUrl = `${appUrl}/auth/verify-email?token=${token}`;
 
         try {
-            await this.transporter.sendMail({
+            await this.getTransporter().sendMail({
                 from,
                 to,
                 subject: 'Verify your Amazon Clone account',

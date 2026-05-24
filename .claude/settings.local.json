@@ -10,7 +10,10 @@
       "Bash(Select-Object -ExpandProperty FullName)",
       "Bash(Sort-Object)",
       "Bash(npx dotenv *)",
-      "PowerShell($env:DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/marketplace?schema=public\"; npx prisma migrate deploy --schema apps/api/prisma/schema.prisma)"
+      "PowerShell($env:DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/marketplace?schema=public\"; npx prisma migrate deploy --schema apps/api/prisma/schema.prisma)",
+      "Bash(Get-ChildItem -Path \"e:\\\\projects\\\\marketplace_mono\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(npm install *)"
     ]
   }
 }

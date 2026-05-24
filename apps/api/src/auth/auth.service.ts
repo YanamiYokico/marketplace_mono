@@ -42,20 +42,11 @@ export class AuthService {
       password: hashedPassword,
       emailVerificationToken: token,
       emailVerificationExpires: expires,
+      isEmailVerified: true,
     });
 
-    try {
-      await this.mailService.sendVerificationEmail(user.email, user.name, token);
-    } catch {
-      await this.usersService.deleteById(user.id);
-      throw new InternalServerErrorException(
-        'Could not send verification email. Please try again later.',
-      );
-    }
-
     return {
-      message:
-        'Registration successful. Please check your email to verify your account.',
+      message: 'Registration successful.',
       user: toPublicUser(user),
     };
   }
@@ -84,12 +75,6 @@ export class AuthService {
     const passwordMatches = await bcrypt.compare(dto.password, user.password);
     if (!passwordMatches) {
       throw new UnauthorizedException('Invalid email or password');
-    }
-
-    if (!user.isEmailVerified) {
-      throw new ForbiddenException(
-        'Please verify your email before signing in',
-      );
     }
 
     return this.buildAuthResponse(user);
