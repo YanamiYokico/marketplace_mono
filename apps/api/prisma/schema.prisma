@@ -17,6 +17,42 @@ model User {
   emailVerificationExpires DateTime? @map("email_verification_expires")
   createdAt                DateTime  @default(now()) @map("created_at")
   updatedAt                DateTime  @updatedAt @map("updated_at")
+  store                    Store?
 
   @@map("users")
+}
+
+model Category {
+  id        String @id @default(uuid())
+  slug      String @unique
+  name      String
+  sortOrder Int    @map("sort_order")
+
+  @@map("categories")
+}
+
+model Store {
+  id        String    @id @default(uuid())
+  name      String
+  userId    String    @unique @map("user_id")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products  Product[]
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@map("stores")
+}
+
+model Product {
+  id        String   @id @default(uuid())
+  name      String
+  price     Decimal  @db.Decimal(10, 2)
+  rating    Float    @default(0)
+  imageUrl  String   @map("image_url")
+  storeId   String   @map("store_id")
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("products")
 }
