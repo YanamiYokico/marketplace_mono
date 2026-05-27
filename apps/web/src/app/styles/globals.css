@@ -12,33 +12,16 @@
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-
-  html {
-    color-scheme: dark;
-  }
-
-  .imgLight {
-    display: none;
-  }
-
-  .imgDark {
-    display: unset;
-  }
-}
-
 @layer base {
   html,
   body {
     @apply max-w-[100vw] overflow-x-hidden;
+    color-scheme: light;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
+    background-color: #ffffff;
   }
 
   * {

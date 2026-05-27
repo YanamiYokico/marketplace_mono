@@ -4,3 +4,10 @@ export {
   registerSchema,
   type RegisterFormValues,
 } from "./register-by-email";
+export {
+  ProductList,
+  ProductCard,
+  ProductForm,
+  productSchema,
+  type ProductFormValues,
+} from "./products";
