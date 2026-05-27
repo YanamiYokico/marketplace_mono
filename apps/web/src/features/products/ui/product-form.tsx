@@ -24,8 +24,12 @@ export function ProductForm({ onSubmit, onCancel, error }: ProductFormProps) {
   });
 
   const handleValidSubmit = async (values: ProductFormValues) => {
-    await onSubmit(values);
-    reset();
+    try {
+      await onSubmit(values);
+      reset();
+    } catch {
+      // error displayed via error prop from parent
+    }
   };
 
   return (

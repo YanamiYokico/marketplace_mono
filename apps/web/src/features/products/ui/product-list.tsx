@@ -85,7 +85,6 @@ export function ProductList() {
       setIsAddOpen(false);
     } catch (e) {
       setAddError(e instanceof Error ? e.message : "Failed to add product");
-      throw e;
     }
   };
 

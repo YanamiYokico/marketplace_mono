@@ -1,5 +1,8 @@
+"use client";
+
 import type { Product } from "@/entities/product";
 import { Image } from "@/shared/ui";
+import { AddToCartButton } from "@/features/cart";
 
 type ProductCardProps = {
   product: Product;
@@ -38,6 +41,7 @@ export function ProductCard({ product }: ProductCardProps) {
             <span className="text-xs text-foreground/40">No rating</span>
           )}
         </div>
+        <AddToCartButton product={product} className="mt-3 w-full justify-center" />
       </div>
     </div>
   );
