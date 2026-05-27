@@ -18,19 +18,19 @@ export function Header() {
   };
 
   return (
-    <header className="flex items-center justify-between border-b border-foreground/15 px-6 py-4">
-      <Link href={user ? "/dashboard" : "/"} className="text-lg font-bold tracking-tight">
+    <header className="flex items-center justify-between bg-[#5A8A02] px-6 py-4">
+      <Link href={user ? "/dashboard" : "/"} className="text-lg font-bold tracking-tight text-white">
         Marketplace
       </Link>
       <nav className="flex items-center gap-2">
         {user ? (
           <>
-            <span className="text-sm text-foreground/60">
+            <span className="text-sm text-white/75">
               {user.name}
             </span>
             <button
               onClick={handleLogout}
-              className={cn(navLinkClass, "border border-foreground/20 hover:bg-foreground/5")}
+              className={cn(navLinkClass, "border border-white/30 text-white hover:bg-white/10")}
             >
               Sign out
             </button>
@@ -39,13 +39,13 @@ export function Header() {
           <>
             <Link
               href="/auth"
-              className={cn(navLinkClass, "opacity-75 hover:opacity-100")}
+              className={cn(navLinkClass, "text-white/80 hover:text-white")}
             >
               Sign in
             </Link>
             <Link
               href="/register"
-              className={cn(navLinkClass, "border border-foreground/20 hover:bg-foreground/5")}
+              className={cn(navLinkClass, "border border-white/30 text-white hover:bg-white/10")}
             >
               Register
             </Link>

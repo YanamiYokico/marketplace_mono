@@ -13,7 +13,11 @@
       "PowerShell($env:DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/marketplace?schema=public\"; npx prisma migrate deploy --schema apps/api/prisma/schema.prisma)",
       "Bash(Get-ChildItem -Path \"e:\\\\projects\\\\marketplace_mono\" -Directory)",
       "Bash(Select-Object Name)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(Get-ChildItem -Path \"e:\\\\projects\\\\marketplace_mono\\\\apps\\\\web\\\\src\" -Recurse -Directory)",
+      "Bash(Get-ChildItem -Path \"e:\\\\projects\\\\marketplace_mono\\\\apps\\\\web\" -Depth 0)",
+      "Bash(npx tsc *)",
+      "Bash(Get-ChildItem -Path \"e:\\\\projects\\\\marketplace_mono\\\\apps\\\\web\\\\src\" -Directory)"
     ]
   }
 }
