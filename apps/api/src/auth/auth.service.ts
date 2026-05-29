@@ -8,12 +8,13 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { randomBytes } from 'crypto';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { VerifyEmailDto } from './dto/verify-email.dto';
 import { MailService } from './mail/mail.service';
 import { toPublicUser } from './to-public-user.util';
+import { generateVerificationCode } from './verification-code.util';
 
 const VERIFICATION_EXPIRY_MS = 24 * 60 * 60 * 1000;
 const BCRYPT_ROUNDS = 10;
@@ -32,7 +33,8 @@ export class AuthService {
       throw new ConflictException('Email is already registered');
     }
 
-    const token = randomBytes(32).toString('hex');
+    const code = generateVerificationCode();
+    const codeHash = await bcrypt.hash(code, BCRYPT_ROUNDS);
     const expires = new Date(Date.now() + VERIFICATION_EXPIRY_MS);
     const hashedPassword = await bcrypt.hash(dto.password, BCRYPT_ROUNDS);
 
@@ -40,25 +42,50 @@ export class AuthService {
       name: dto.name,
       email: dto.email,
       password: hashedPassword,
-      emailVerificationToken: token,
+      emailVerificationToken: codeHash,
       emailVerificationExpires: expires,
-      isEmailVerified: true,
     });
 
+    try {
+      await this.mailService.sendVerificationCode(user.email, user.name, code);
+    } catch {
+      await this.usersService.deleteById(user.id);
+      throw new InternalServerErrorException(
+        'Could not send verification email. Please try again later.',
+      );
+    }
+
     return {
-      message: 'Registration successful.',
+      message:
+        'Registration successful. Check your email for a 6-digit verification code.',
       user: toPublicUser(user),
     };
   }
 
-  async verifyEmail(token: string) {
-    const user = await this.usersService.findByVerificationToken(token);
+  async verifyEmail(dto: VerifyEmailDto) {
+    const user = await this.usersService.findByEmail(dto.email);
     if (!user) {
-      throw new UnauthorizedException('Invalid or expired verification link');
+      throw new UnauthorizedException('Invalid or expired verification code');
     }
 
     if (user.isEmailVerified) {
       return { message: 'Email is already verified. You can sign in.' };
+    }
+
+    if (
+      !user.emailVerificationToken ||
+      !user.emailVerificationExpires ||
+      user.emailVerificationExpires <= new Date()
+    ) {
+      throw new UnauthorizedException('Invalid or expired verification code');
+    }
+
+    const codeMatches = await bcrypt.compare(
+      dto.code,
+      user.emailVerificationToken,
+    );
+    if (!codeMatches) {
+      throw new UnauthorizedException('Invalid or expired verification code');
     }
 
     await this.usersService.markEmailVerified(user.id);
@@ -77,6 +104,12 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
+    if (!user.isEmailVerified) {
+      throw new ForbiddenException(
+        'Please verify your email before signing in. Enter the code from your email or request a new one.',
+      );
+    }
+
     return this.buildAuthResponse(user);
   }
 
@@ -86,17 +119,18 @@ export class AuthService {
     if (!user || user.isEmailVerified) {
       return {
         message:
-          'If an account exists with this email, a verification link has been sent.',
+          'If an account exists with this email, a verification code has been sent.',
       };
     }
 
-    const token = randomBytes(32).toString('hex');
+    const code = generateVerificationCode();
+    const codeHash = await bcrypt.hash(code, BCRYPT_ROUNDS);
     const expires = new Date(Date.now() + VERIFICATION_EXPIRY_MS);
 
-    await this.usersService.setVerificationToken(user.id, token, expires);
+    await this.usersService.setVerificationToken(user.id, codeHash, expires);
 
     try {
-      await this.mailService.sendVerificationEmail(user.email, user.name, token);
+      await this.mailService.sendVerificationCode(user.email, user.name, code);
     } catch {
       throw new InternalServerErrorException(
         'Could not send verification email. Please try again later.',
@@ -105,7 +139,7 @@ export class AuthService {
 
     return {
       message:
-        'If an account exists with this email, a verification link has been sent.',
+        'If an account exists with this email, a verification code has been sent.',
     };
   }
 
