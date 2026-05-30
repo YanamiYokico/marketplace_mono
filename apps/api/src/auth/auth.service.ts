@@ -16,7 +16,7 @@ import { MailService } from './mail/mail.service';
 import { toPublicUser } from './to-public-user.util';
 import { generateVerificationCode } from './verification-code.util';
 
-const VERIFICATION_EXPIRY_MS = 24 * 60 * 60 * 1000;
+const VERIFICATION_EXPIRY_MS = 15 * 60 * 1000;
 const BCRYPT_ROUNDS = 10;
 
 @Injectable()

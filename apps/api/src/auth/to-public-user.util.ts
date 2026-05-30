@@ -5,6 +5,7 @@ export function toPublicUser(user: User) {
     id: user.id,
     name: user.name,
     email: user.email,
+    role: user.role,
     isEmailVerified: user.isEmailVerified,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,

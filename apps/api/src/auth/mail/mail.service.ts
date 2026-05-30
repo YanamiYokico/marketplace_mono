@@ -39,7 +39,7 @@ export class MailService {
           <p>Hi ${name},</p>
           <p>Thanks for signing up. Enter this code to verify your email:</p>
           <p style="font-size: 24px; font-weight: bold; letter-spacing: 4px;">${code}</p>
-          <p>This code expires in 24 hours.</p>
+          <p>This code expires in 15 minutes.</p>
           <p>If you did not create an account, you can ignore this email.</p>
         `,
       });

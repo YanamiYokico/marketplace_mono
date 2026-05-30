@@ -7,11 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  CUSTOMER
+  SELLER
+  ADMIN
+}
+
 model User {
   id                       String    @id @default(uuid())
   name                     String
   email                    String    @unique
   password                 String
+  role                     UserRole  @default(CUSTOMER)
   isEmailVerified          Boolean   @default(false) @map("is_email_verified")
   emailVerificationToken   String?   @map("email_verification_token")
   emailVerificationExpires DateTime? @map("email_verification_expires")
@@ -23,10 +30,11 @@ model User {
 }
 
 model Category {
-  id        String @id @default(uuid())
-  slug      String @unique
+  id        String    @id @default(uuid())
+  slug      String    @unique
   name      String
-  sortOrder Int    @map("sort_order")
+  sortOrder Int       @map("sort_order")
+  products  Product[]
 
   @@map("categories")
 }
@@ -44,15 +52,18 @@ model Store {
 }
 
 model Product {
-  id        String   @id @default(uuid())
-  name      String
-  price     Decimal  @db.Decimal(10, 2)
-  rating    Float    @default(0)
-  imageUrl  String   @map("image_url")
-  storeId   String   @map("store_id")
-  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id         String    @id @default(uuid())
+  name       String
+  price      Decimal   @db.Decimal(10, 2)
+  rating     Float     @default(0)
+  imageUrl   String    @map("image_url")
+  storeId    String    @map("store_id")
+  categoryId String?   @map("category_id")
+  store      Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
 
+  @@index([categoryId])
   @@map("products")
 }
