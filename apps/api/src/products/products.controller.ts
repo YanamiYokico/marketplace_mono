@@ -29,8 +29,20 @@ export class ProductsController {
   ) {}
 
   @Get()
-  findByStore(@Query() query: ListProductsQueryDto) {
-    return this.productsService.findByStoreId(query.storeId);
+  findAll(@Query() query: ListProductsQueryDto) {
+    if (query.storeId) {
+      return this.productsService.findByStoreId(query.storeId);
+    }
+
+    return this.productsService.findCatalog({
+      categoryId: query.categoryId,
+      minPrice: query.minPrice,
+      maxPrice: query.maxPrice,
+      sortBy: query.sortBy,
+      sortOrder: query.sortOrder,
+      page: query.page,
+      limit: query.limit,
+    });
   }
 
   @Get(':id')

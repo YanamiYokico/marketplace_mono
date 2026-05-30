@@ -42,15 +42,6 @@ export class UsersService {
     });
   }
 
-  findByVerificationToken(token: string): Promise<User | null> {
-    return this.prisma.user.findFirst({
-      where: {
-        emailVerificationToken: token,
-        emailVerificationExpires: { gt: new Date() },
-      },
-    });
-  }
-
   markEmailVerified(userId: string): Promise<User> {
     return this.prisma.user.update({
       where: { id: userId },
