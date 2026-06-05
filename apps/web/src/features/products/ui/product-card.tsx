@@ -6,6 +6,9 @@ import { AddToCartButton } from "@/features/cart";
 
 type ProductCardProps = {
   product: Product;
+  isOwner?: boolean;
+  onEdit?: (product: Product) => void;
+  onDelete?: (product: Product) => void;
 };
 
 function StarRating({ value }: { value: number }) {
@@ -19,7 +22,7 @@ function StarRating({ value }: { value: number }) {
   );
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, isOwner, onEdit, onDelete }: ProductCardProps) {
   return (
     <div className="flex flex-col overflow-hidden rounded-xl border border-foreground/10 bg-background transition hover:shadow-md">
       <div className="relative aspect-video w-full overflow-hidden bg-foreground/5">
@@ -41,7 +44,26 @@ export function ProductCard({ product }: ProductCardProps) {
             <span className="text-xs text-foreground/40">No rating</span>
           )}
         </div>
-        <AddToCartButton product={product} className="mt-3 w-full justify-center" />
+        {isOwner ? (
+          <div className="mt-3 flex gap-2">
+            <button
+              type="button"
+              onClick={() => onEdit?.(product)}
+              className="flex h-9 flex-1 items-center justify-center rounded-lg border border-foreground/20 text-sm font-semibold transition hover:border-blue-500 hover:text-blue-500"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              onClick={() => onDelete?.(product)}
+              className="flex h-9 flex-1 items-center justify-center rounded-lg border border-foreground/20 text-sm font-semibold transition hover:border-red-500 hover:text-red-500"
+            >
+              Delete
+            </button>
+          </div>
+        ) : (
+          <AddToCartButton product={product} className="mt-3 w-full justify-center" />
+        )}
       </div>
     </div>
   );

@@ -58,3 +58,25 @@ export async function createProduct(
     body: JSON.stringify(payload),
   });
 }
+
+export async function updateProduct(
+  id: string,
+  payload: Partial<CreateProductPayload>,
+  token: string,
+): Promise<Product> {
+  return apiFetch(`/products/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteProduct(id: string, token: string): Promise<void> {
+  await apiFetch(`/products/${id}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}

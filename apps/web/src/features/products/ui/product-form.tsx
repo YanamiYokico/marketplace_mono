@@ -13,9 +13,11 @@ type ProductFormProps = {
   onSubmit: (values: ProductFormValues) => Promise<void>;
   onCancel: () => void;
   error?: string;
+  defaultValues?: Partial<ProductFormValues>;
+  submitLabel?: string;
 };
 
-export function ProductForm({ categories, onSubmit, onCancel, error }: ProductFormProps) {
+export function ProductForm({ categories, onSubmit, onCancel, error, defaultValues, submitLabel = "Add product" }: ProductFormProps) {
   const {
     register,
     handleSubmit,
@@ -23,7 +25,7 @@ export function ProductForm({ categories, onSubmit, onCancel, error }: ProductFo
     reset,
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
-    defaultValues: { name: "", price: 0, rating: undefined, imageUrl: "", categoryId: "" },
+    defaultValues: { name: "", price: 0, rating: undefined, imageUrl: "", categoryId: "", ...defaultValues },
   });
 
   const handleValidSubmit = async (values: ProductFormValues) => {
@@ -39,11 +41,10 @@ export function ProductForm({ categories, onSubmit, onCancel, error }: ProductFo
 
   return (
     <form
-      className="flex flex-col gap-4 rounded-xl border border-foreground/10 bg-background p-6"
+      className="mt-6 flex flex-col gap-4"
       onSubmit={handleSubmit(handleValidSubmit)}
       noValidate
     >
-      <h3 className="font-semibold">Add product</h3>
       <div className="grid gap-4 sm:grid-cols-2">
         <Input
           label="Name"
@@ -95,7 +96,7 @@ export function ProductForm({ categories, onSubmit, onCancel, error }: ProductFo
       )}
       <div className="flex gap-2">
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Adding…" : "Add product"}
+          {isSubmitting ? "Saving…" : submitLabel}
         </Button>
         <Button type="button" variant="secondary" onClick={onCancel}>
           Cancel

@@ -8,8 +8,11 @@ import { fetchCategories } from "@/entities/category";
 import { useSession } from "@/entities/session";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
+import { Modal } from "@/shared/ui/modal";
 import {
   createProduct,
+  updateProduct,
+  deleteProduct,
   fetchProductsByStore,
   type CreateProductPayload,
 } from "../api/products-api";
@@ -27,8 +30,12 @@ export function ProductList() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(false);
+
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [addError, setAddError] = useState<string>();
+
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editError, setEditError] = useState<string>();
 
   const [storeName, setStoreName] = useState("");
   const [storeNameError, setStoreNameError] = useState<string>();
@@ -96,6 +103,29 @@ export function ProductList() {
     }
   };
 
+  const handleEditProduct = async (values: ProductFormValues) => {
+    if (!token || !editingProduct) return;
+    setEditError(undefined);
+    try {
+      const updated = await updateProduct(editingProduct.id, values, token);
+      setProducts((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+      setEditingProduct(null);
+    } catch (e) {
+      setEditError(e instanceof Error ? e.message : "Failed to update product");
+    }
+  };
+
+  const handleDeleteProduct = async (product: Product) => {
+    if (!token) return;
+    if (!confirm(`Delete "${product.name}"?`)) return;
+    try {
+      await deleteProduct(product.id, token);
+      setProducts((prev) => prev.filter((p) => p.id !== product.id));
+    } catch {
+      // silently ignore — could add a toast here
+    }
+  };
+
   if (storeState === "loading") {
     return (
       <p className="py-8 text-center text-sm text-foreground/50">Loading…</p>
@@ -142,24 +172,46 @@ export function ProductList() {
           <h2 className="text-xl font-bold">Products</h2>
           <p className="text-sm text-foreground/50">{storeState.name}</p>
         </div>
-        {!isAddOpen && (
-          <Button onClick={() => setIsAddOpen(true)} variant="secondary">
-            + Add product
-          </Button>
-        )}
+        <Button onClick={() => setIsAddOpen(true)} variant="secondary">
+          + Add product
+        </Button>
       </div>
 
-      {isAddOpen && (
+      <Modal
+        isOpen={isAddOpen}
+        onClose={() => { setIsAddOpen(false); setAddError(undefined); }}
+        title="Add product"
+      >
         <ProductForm
           categories={categories}
           onSubmit={handleAddProduct}
-          onCancel={() => {
-            setIsAddOpen(false);
-            setAddError(undefined);
-          }}
+          onCancel={() => { setIsAddOpen(false); setAddError(undefined); }}
           error={addError}
         />
-      )}
+      </Modal>
+
+      <Modal
+        isOpen={!!editingProduct}
+        onClose={() => { setEditingProduct(null); setEditError(undefined); }}
+        title="Edit product"
+      >
+        {editingProduct && (
+          <ProductForm
+            categories={categories}
+            defaultValues={{
+              name: editingProduct.name,
+              price: Number(editingProduct.price),
+              rating: editingProduct.rating ?? undefined,
+              imageUrl: editingProduct.imageUrl,
+              categoryId: "",
+            }}
+            onSubmit={handleEditProduct}
+            onCancel={() => { setEditingProduct(null); setEditError(undefined); }}
+            error={editError}
+            submitLabel="Save changes"
+          />
+        )}
+      </Modal>
 
       {isLoadingProducts ? (
         <p className="py-8 text-center text-sm text-foreground/50">
@@ -168,20 +220,24 @@ export function ProductList() {
       ) : products.length === 0 ? (
         <div className="rounded-xl border border-dashed border-foreground/20 py-16 text-center">
           <p className="text-foreground/40">No products yet.</p>
-          {!isAddOpen && (
-            <button
-              type="button"
-              onClick={() => setIsAddOpen(true)}
-              className="mt-2 text-sm font-semibold underline underline-offset-2 opacity-75 hover:opacity-100"
-            >
-              Add your first product
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => setIsAddOpen(true)}
+            className="mt-2 text-sm font-semibold underline underline-offset-2 opacity-75 hover:opacity-100"
+          >
+            Add your first product
+          </button>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard
+              key={product.id}
+              product={product}
+              isOwner
+              onEdit={setEditingProduct}
+              onDelete={handleDeleteProduct}
+            />
           ))}
         </div>
       )}
