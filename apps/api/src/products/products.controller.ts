@@ -68,6 +68,7 @@ export class ProductsController {
       rating: dto.rating,
       imageUrl: dto.imageUrl,
       storeId: store.id,
+      categoryId: dto.categoryId,
     });
   }
 

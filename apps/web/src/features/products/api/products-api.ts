@@ -6,6 +6,7 @@ export type CreateProductPayload = {
   price: number;
   rating?: number;
   imageUrl: string;
+  categoryId?: string;
 };
 
 export type FetchAllProductsParams = {

@@ -12,6 +12,7 @@ export function AuthView() {
   const [error, setError] = useState<string>();
 
   const justRegistered = searchParams.get("registered") === "1";
+  const justVerified = searchParams.get("verified") === "1";
 
   const handleSubmit = async (credentials: { email: string; password: string }) => {
     setError(undefined);
@@ -31,6 +32,11 @@ export function AuthView() {
         {justRegistered && (
           <p className="mt-3 rounded-lg bg-green-50 px-3 py-2 text-sm text-green-700">
             Account created! Check your email to verify it, then sign in.
+          </p>
+        )}
+        {justVerified && (
+          <p className="mt-3 rounded-lg bg-green-50 px-3 py-2 text-sm text-green-700">
+            Email verified! You can now sign in.
           </p>
         )}
         <LoginForm

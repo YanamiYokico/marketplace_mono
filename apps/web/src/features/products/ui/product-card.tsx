@@ -22,11 +22,11 @@ function StarRating({ value }: { value: number }) {
 export function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="flex flex-col overflow-hidden rounded-xl border border-foreground/10 bg-background transition hover:shadow-md">
-      <div className="relative aspect-video w-full bg-foreground/5">
+      <div className="relative aspect-video w-full overflow-hidden bg-foreground/5">
         <Image
           src={product.imageUrl}
           alt={product.name}
-          className="h-full w-full"
+          className="absolute inset-0 h-full w-full"
         />
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">

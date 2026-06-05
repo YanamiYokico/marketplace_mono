@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Store } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
-import { PrismaClient } from '@prisma/client';
 export type CreateStoreData = {
   name: string;
   userId: string;

@@ -47,7 +47,7 @@ export class ProductsService {
     const where: Prisma.ProductWhereInput = {};
 
     if (params.categoryId) {
-      where.category = { is: { id: params.categoryId } };
+      where.categoryId = params.categoryId;
     }
 
     if (params.minPrice !== undefined || params.maxPrice !== undefined) {

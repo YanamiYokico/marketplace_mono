@@ -13,7 +13,7 @@ export function RegisterView() {
     setError(undefined);
     try {
       await registerApi({ name, email, password });
-      router.push("/auth?registered=1");
+      router.push(`/verify-email?email=${encodeURIComponent(email)}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     }

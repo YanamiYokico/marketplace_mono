@@ -4,15 +4,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
+import { Select } from "@/shared/ui/select";
+import type { Category } from "@/entities/category";
 import { productSchema, type ProductFormValues } from "../model/product-schema";
 
 type ProductFormProps = {
+  categories: Category[];
   onSubmit: (values: ProductFormValues) => Promise<void>;
   onCancel: () => void;
   error?: string;
 };
 
-export function ProductForm({ onSubmit, onCancel, error }: ProductFormProps) {
+export function ProductForm({ categories, onSubmit, onCancel, error }: ProductFormProps) {
   const {
     register,
     handleSubmit,
@@ -20,7 +23,7 @@ export function ProductForm({ onSubmit, onCancel, error }: ProductFormProps) {
     reset,
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
-    defaultValues: { name: "", price: 0, rating: undefined, imageUrl: "" },
+    defaultValues: { name: "", price: 0, rating: undefined, imageUrl: "", categoryId: "" },
   });
 
   const handleValidSubmit = async (values: ProductFormValues) => {
@@ -31,6 +34,8 @@ export function ProductForm({ onSubmit, onCancel, error }: ProductFormProps) {
       // error displayed via error prop from parent
     }
   };
+
+  const categoryOptions = categories.map((c) => ({ value: c.id, label: c.name }));
 
   return (
     <form
@@ -74,6 +79,13 @@ export function ProductForm({ onSubmit, onCancel, error }: ProductFormProps) {
           placeholder="https://example.com/image.jpg"
           error={errors.imageUrl?.message}
           {...register("imageUrl")}
+        />
+        <Select
+          label="Category (optional)"
+          placeholder="— No category —"
+          options={categoryOptions}
+          error={errors.categoryId?.message}
+          {...register("categoryId")}
         />
       </div>
       {error && (

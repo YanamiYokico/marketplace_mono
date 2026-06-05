@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsString,
   IsUrl,
+  IsUUID,
   Max,
   Min,
   MinLength,
@@ -28,4 +29,9 @@ export class CreateProductDto {
 
   @IsUrl()
   imageUrl: string;
+
+  @IsOptional()
+  @IsString()
+  @IsUUID()
+  categoryId?: string;
 }

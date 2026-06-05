@@ -17,7 +17,18 @@
       "Bash(Get-ChildItem -Path \"e:\\\\projects\\\\marketplace_mono\\\\apps\\\\web\\\\src\" -Recurse -Directory)",
       "Bash(Get-ChildItem -Path \"e:\\\\projects\\\\marketplace_mono\\\\apps\\\\web\" -Depth 0)",
       "Bash(npx tsc *)",
-      "Bash(Get-ChildItem -Path \"e:\\\\projects\\\\marketplace_mono\\\\apps\\\\web\\\\src\" -Directory)"
+      "Bash(Get-ChildItem -Path \"e:\\\\projects\\\\marketplace_mono\\\\apps\\\\web\\\\src\" -Directory)",
+      "Bash(git rebase *)",
+      "Bash(git stash *)",
+      "Bash(git checkout *)",
+      "Bash(git cherry-pick *)",
+      "Bash(git add *)",
+      "Bash(git push *)",
+      "Bash(git -c http.sslVerify=false push origin feature/backend-auth-clean:feature/backend-auth --force)",
+      "Bash(git branch *)",
+      "Bash(git -c http.sslVerify=false push origin origin/feature/backend-auth:refs/heads/feature/auth-email-code-and-catalog)",
+      "Bash(git -c http.sslVerify=false push origin --delete feature/backend-auth)",
+      "Bash(npx prisma *)"
     ]
   }
 }

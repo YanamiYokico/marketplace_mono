@@ -5,6 +5,7 @@ export const productSchema = z.object({
   price: z.number().min(0, "Price must be 0 or more"),
   rating: z.number().min(0).max(5).optional(),
   imageUrl: z.string().url("Must be a valid URL"),
+  categoryId: z.string().optional(),
 });
 
 export type ProductFormValues = z.infer<typeof productSchema>;

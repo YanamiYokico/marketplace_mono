@@ -9,7 +9,7 @@ import {
   type FetchAllProductsParams,
 } from "@/features/products/api/products-api";
 
-const LIMIT = 20;
+const LIMIT = 4;
 
 export type SortOption = "price_asc" | "price_desc" | "rating_desc";
 

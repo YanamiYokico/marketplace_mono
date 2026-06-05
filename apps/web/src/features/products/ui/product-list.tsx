@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Product } from "@/entities/product";
 import type { Store } from "@/entities/store";
+import type { Category } from "@/entities/category";
+import { fetchCategories } from "@/entities/category";
 import { useSession } from "@/entities/session";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
@@ -23,6 +25,7 @@ export function ProductList() {
 
   const [storeState, setStoreState] = useState<StoreState>("loading");
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [addError, setAddError] = useState<string>();
@@ -39,6 +42,10 @@ export function ProductList() {
     } finally {
       setIsLoadingProducts(false);
     }
+  }, []);
+
+  useEffect(() => {
+    fetchCategories().then(setCategories).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -78,6 +85,7 @@ export function ProductList() {
       price: values.price,
       imageUrl: values.imageUrl,
       ...(values.rating !== undefined && { rating: values.rating }),
+      ...(values.categoryId && { categoryId: values.categoryId }),
     };
     try {
       const product = await createProduct(payload, token);
@@ -143,6 +151,7 @@ export function ProductList() {
 
       {isAddOpen && (
         <ProductForm
+          categories={categories}
           onSubmit={handleAddProduct}
           onCancel={() => {
             setIsAddOpen(false);
