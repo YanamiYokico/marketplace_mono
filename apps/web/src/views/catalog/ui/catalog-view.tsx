@@ -1,11 +1,24 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { ProductCard } from "@/features/products/ui/product-card";
 import { useCatalog, CatalogSort } from "@/features/catalog";
 import { CatalogSidebar } from "@/widgets/catalog-sidebar";
 import { Pagination } from "@/shared/ui/pagination";
+import { useSession } from "@/entities/session";
+import { fetchMyStore } from "@/features/products/api/store-api";
 
 export function CatalogView() {
+  const { token } = useSession();
+  const [myStoreId, setMyStoreId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!token) return;
+    fetchMyStore(token)
+      .then((store) => { if (store) setMyStoreId(store.id); })
+      .catch(() => {});
+  }, [token]);
+
   const {
     products,
     categories,
@@ -57,7 +70,11 @@ export function CatalogView() {
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  isOwner={myStoreId !== null && product.storeId === myStoreId}
+                />
               ))}
             </div>
           )}
