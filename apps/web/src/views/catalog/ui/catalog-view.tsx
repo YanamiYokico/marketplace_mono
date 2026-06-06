@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ProductCard } from "@/features/products/ui/product-card";
 import { useCatalog, CatalogSort } from "@/features/catalog";
 import { CatalogSidebar } from "@/widgets/catalog-sidebar";
+import { CatalogBanner } from "@/widgets/catalog-banner";
 import { Pagination } from "@/shared/ui/pagination";
 import { useSession } from "@/entities/session";
 import { fetchMyStore } from "@/features/products/api/store-api";
@@ -34,7 +35,8 @@ export function CatalogView() {
   } = useCatalog();
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-10">
+    <div className="mx-auto max-w-379.5 px-6 py-12">
+      <CatalogBanner />
       <div className="flex gap-8">
         <CatalogSidebar
           categories={categories}
@@ -42,16 +44,17 @@ export function CatalogView() {
           onApply={applyFilters}
         />
 
-        <div className="flex flex-1 flex-col gap-6">
+        <div className="flex flex-1 flex-col gap-8">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-foreground/50">
+            <span className="inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-foreground/[0.02] px-3 py-1.5 text-xs font-medium text-foreground/60">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden />
               {isLoading ? "Loading…" : `Page ${page} of ${totalPages}`}
-            </p>
+            </span>
             <CatalogSort value={sort} onChange={applySort} />
           </div>
 
           {isLoading ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div
                   key={i}
@@ -68,7 +71,7 @@ export function CatalogView() {
               <p className="text-foreground/40">No products found.</p>
             </div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {products.map((product) => (
                 <ProductCard
                   key={product.id}

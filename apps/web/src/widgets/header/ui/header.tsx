@@ -12,7 +12,7 @@ const navLinkClass =
   "inline-flex h-11 items-center justify-center rounded-lg px-5 text-[15px] font-semibold transition";
 
 export function Header() {
-  const { user, logout } = useSession();
+  const { user, logout, hydrated } = useSession();
   const { totalCount } = useCart();
   const router = useRouter();
   const [cartOpen, setCartOpen] = useState(false);
@@ -49,7 +49,7 @@ export function Header() {
           )}
         </button>
 
-        {user ? (
+        {!hydrated ? null : user ? (
           <>
             <Link
               href="/dashboard"

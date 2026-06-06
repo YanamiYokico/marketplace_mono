@@ -11,21 +11,10 @@ type ProductCardProps = {
   onDelete?: (product: Product) => void;
 };
 
-function StarRating({ value }: { value: number }) {
-  return (
-    <span className="text-amber-400" aria-label={`Rating: ${value} out of 5`}>
-      {Array.from({ length: 5 }, (_, i) => (
-        <span key={i}>{i < Math.round(value) ? "★" : "☆"}</span>
-      ))}
-      <span className="ml-1 text-xs text-foreground/50">{value.toFixed(1)}</span>
-    </span>
-  );
-}
-
 export function ProductCard({ product, isOwner, onEdit, onDelete }: ProductCardProps) {
   return (
-    <div className="flex flex-col overflow-hidden rounded-xl border border-foreground/10 bg-background transition hover:shadow-md">
-      <div className="relative aspect-video w-full overflow-hidden bg-foreground/5">
+    <div className="group flex flex-col overflow-hidden rounded-2xl border border-foreground/10 bg-background transition hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-lg">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-foreground/[0.04]">
         <Image
           src={product.imageUrl}
           alt={product.name}
@@ -33,13 +22,18 @@ export function ProductCard({ product, isOwner, onEdit, onDelete }: ProductCardP
         />
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
-        <h3 className="font-semibold leading-snug">{product.name}</h3>
+        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-foreground/90">
+          {product.name}
+        </h3>
         <div className="mt-auto flex items-center justify-between">
-          <span className="text-lg font-bold">
+          <span className="text-lg font-bold tabular-nums tracking-tight">
             ${Number(product.price).toFixed(2)}
           </span>
           {product.rating !== null && product.rating !== undefined ? (
-            <StarRating value={Number(product.rating)} />
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-600">
+              <span aria-hidden>★</span>
+              {Number(product.rating).toFixed(1)}
+            </span>
           ) : (
             <span className="text-xs text-foreground/40">No rating</span>
           )}
