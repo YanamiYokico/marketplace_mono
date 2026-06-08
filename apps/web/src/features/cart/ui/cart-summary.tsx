@@ -2,6 +2,7 @@
 
 import { useCart } from "@/entities/cart";
 import { Button } from "@/shared/ui";
+import { CheckoutButton } from "@/features/checkout";
 
 export function CartSummary() {
   const { totalCount, totalPrice, clearCart } = useCart();
@@ -16,7 +17,7 @@ export function CartSummary() {
         <span className="font-semibold">Total</span>
         <span className="text-lg font-bold">${totalPrice.toFixed(2)}</span>
       </div>
-      <Button>Checkout</Button>
+      <CheckoutButton className="w-full" />
       <Button variant="ghost" onClick={clearCart}>
         Clear cart
       </Button>
