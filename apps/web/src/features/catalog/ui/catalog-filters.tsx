@@ -25,8 +25,11 @@ export function CatalogFiltersPanel({ categories, filters, onApply }: CatalogFil
   };
 
   return (
-    <div className="flex flex-col gap-5">
-      <p className="text-sm font-semibold uppercase tracking-wide opacity-50">Filters</p>
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/60">Filters</p>
+        <span className="h-1 w-1 rounded-full bg-foreground/30" aria-hidden />
+      </div>
 
       <Select
         label="Category"
@@ -37,7 +40,10 @@ export function CatalogFiltersPanel({ categories, filters, onApply }: CatalogFil
       />
 
       <div className="flex flex-col gap-3">
-        <p className="text-sm font-medium opacity-85">Price range</p>
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/60">Price range</p>
+          <span className="text-[10px] text-foreground/40">USD</span>
+        </div>
         <div className="flex items-center gap-2">
           <Input
             label="From"
@@ -58,11 +64,9 @@ export function CatalogFiltersPanel({ categories, filters, onApply }: CatalogFil
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <Button onClick={() => onApply(local)}>Apply</Button>
-        <Button variant="ghost" onClick={handleReset}>
-          Reset
-        </Button>
+      <div className="mt-2 flex flex-col gap-2">
+        <Button onClick={() => onApply(local)} className="w-full">Apply</Button>
+        <Button variant="ghost" onClick={handleReset} className="w-full">Reset</Button>
       </div>
     </div>
   );

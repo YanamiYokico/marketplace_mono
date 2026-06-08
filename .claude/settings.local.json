@@ -28,7 +28,16 @@
       "Bash(git branch *)",
       "Bash(git -c http.sslVerify=false push origin origin/feature/backend-auth:refs/heads/feature/auth-email-code-and-catalog)",
       "Bash(git -c http.sslVerify=false push origin --delete feature/backend-auth)",
-      "Bash(npx prisma *)"
+      "Bash(npx prisma *)",
+      "Bash(cat ~/.docker/config.json)",
+      "Read(//Users/yanami/.docker/**)",
+      "Bash(ls /Applications/Docker.app/Contents/Resources/bin/ | grep credential)",
+      "Read(//Applications/Docker.app/Contents/Resources/bin/**)",
+      "Bash(gh pr *)",
+      "Bash(npx eslint *)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(echo \"TSC_EXIT:$?\")",
+      "Bash(echo \"ESLINT_EXIT:$?\")"
     ]
   }
 }

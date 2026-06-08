@@ -10,7 +10,7 @@ type CatalogSidebarProps = {
 
 export function CatalogSidebar({ categories, filters, onApply }: CatalogSidebarProps) {
   return (
-    <aside className="w-60 shrink-0 rounded-xl border border-foreground/10 bg-background p-5">
+    <aside className="sticky top-24 w-60 shrink-0 self-start rounded-2xl border border-foreground/10 bg-background p-5 shadow-sm">
       <CatalogFiltersPanel
         categories={categories}
         filters={filters}
