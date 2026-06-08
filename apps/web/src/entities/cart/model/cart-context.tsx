@@ -1,51 +1,111 @@
 "use client";
 
-import { createContext, useCallback, useMemo, useState } from "react";
-import type { Product } from "@/entities/product";
-import type { CartItem } from "./types";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import { useSession } from "@/entities/session";
+import {
+  addCartItem,
+  clearCartItems,
+  fetchCart,
+  removeCartItem,
+  updateCartItem,
+} from "../api/cart-api";
+import type { Cart, CartItem } from "./types";
 
 type CartContextValue = {
   items: CartItem[];
   totalCount: number;
   totalPrice: number;
-  addItem: (product: Product) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-  clearCart: () => void;
+  isLoading: boolean;
+  isMutating: boolean;
+  error: string | null;
+  isAuthenticated: boolean;
+  addItem: (productId: string, quantity?: number) => Promise<void>;
+  updateQuantity: (itemId: string, quantity: number) => Promise<void>;
+  removeItem: (itemId: string) => Promise<void>;
+  clearCart: () => Promise<void>;
+  refresh: () => Promise<void>;
 };
 
 export const CartContext = createContext<CartContextValue | null>(null);
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
+export function CartProvider({ children }: { children: ReactNode }) {
+  const { token, hydrated } = useSession();
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMutating, setIsMutating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const addItem = useCallback((product: Product) => {
-    setItems((prev) => {
-      const existing = prev.find((i) => i.product.id === product.id);
-      if (existing) {
-        return prev.map((i) =>
-          i.product.id === product.id ? { ...i, quantity: i.quantity + 1 } : i,
-        );
-      }
-      return [...prev, { product, quantity: 1 }];
-    });
-  }, []);
-
-  const removeItem = useCallback((productId: string) => {
-    setItems((prev) => prev.filter((i) => i.product.id !== productId));
-  }, []);
-
-  const updateQuantity = useCallback((productId: string, quantity: number) => {
-    if (quantity <= 0) {
-      setItems((prev) => prev.filter((i) => i.product.id !== productId));
+  const load = useCallback(async () => {
+    if (!token) {
+      setItems([]);
       return;
     }
-    setItems((prev) =>
-      prev.map((i) => (i.product.id === productId ? { ...i, quantity } : i)),
-    );
-  }, []);
+    setIsLoading(true);
+    setError(null);
+    try {
+      const cart = await fetchCart(token);
+      setItems(cart.items);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to load cart");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [token]);
 
-  const clearCart = useCallback(() => setItems([]), []);
+  // Load the cart once the session is hydrated, and reload on login/logout.
+  useEffect(() => {
+    if (!hydrated) return;
+    void load();
+  }, [hydrated, load]);
+
+  const runMutation = useCallback(
+    async (fn: (token: string) => Promise<Cart>) => {
+      if (!token) {
+        setError("Please sign in to use the cart");
+        return;
+      }
+      setIsMutating(true);
+      setError(null);
+      try {
+        const cart = await fn(token);
+        setItems(cart.items);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Cart update failed");
+      } finally {
+        setIsMutating(false);
+      }
+    },
+    [token],
+  );
+
+  const addItem = useCallback(
+    (productId: string, quantity = 1) =>
+      runMutation((t) => addCartItem(t, productId, quantity)),
+    [runMutation],
+  );
+
+  const updateQuantity = useCallback(
+    (itemId: string, quantity: number) =>
+      runMutation((t) => updateCartItem(t, itemId, quantity)),
+    [runMutation],
+  );
+
+  const removeItem = useCallback(
+    (itemId: string) => runMutation((t) => removeCartItem(t, itemId)),
+    [runMutation],
+  );
+
+  const clearCart = useCallback(
+    () => runMutation((t) => clearCartItems(t)),
+    [runMutation],
+  );
 
   const totalCount = useMemo(
     () => items.reduce((sum, i) => sum + i.quantity, 0),
@@ -59,7 +119,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ items, totalCount, totalPrice, addItem, removeItem, updateQuantity, clearCart }}
+      value={{
+        items,
+        totalCount,
+        totalPrice,
+        isLoading,
+        isMutating,
+        error,
+        isAuthenticated: !!token,
+        addItem,
+        updateQuantity,
+        removeItem,
+        clearCart,
+        refresh: load,
+      }}
     >
       {children}
     </CartContext.Provider>

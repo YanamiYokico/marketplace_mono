@@ -14,7 +14,7 @@ export function OrderSummaryPanel() {
 
       <div className="flex flex-col divide-y divide-foreground/5">
         {items.map((item) => (
-          <div key={item.product.id} className="flex items-center gap-3 py-3">
+          <div key={item.id} className="flex items-center gap-3 py-3">
             <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-foreground/5">
               <Image
                 src={item.product.imageUrl}

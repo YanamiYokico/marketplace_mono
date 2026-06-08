@@ -9,8 +9,22 @@ type CartItemRowProps = {
 };
 
 export function CartItemRow({ item }: CartItemRowProps) {
-  const { updateQuantity, removeItem } = useCart();
-  const { product, quantity } = item;
+  const { updateQuantity, removeItem, isMutating } = useCart();
+  const { id, product, quantity } = item;
+
+  const decrement = () => {
+    if (quantity <= 1) {
+      void removeItem(id);
+    } else {
+      void updateQuantity(id, quantity - 1);
+    }
+  };
+
+  const increment = () => {
+    if (quantity < product.stock) {
+      void updateQuantity(id, quantity + 1);
+    }
+  };
 
   return (
     <div className="flex gap-3 py-3">
@@ -25,16 +39,18 @@ export function CartItemRow({ item }: CartItemRowProps) {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() => updateQuantity(product.id, quantity - 1)}
-            className="flex h-6 w-6 items-center justify-center rounded-md border border-foreground/20 text-sm hover:bg-foreground/5"
+            onClick={decrement}
+            disabled={isMutating}
+            className="flex h-6 w-6 items-center justify-center rounded-md border border-foreground/20 text-sm hover:bg-foreground/5 disabled:opacity-50"
           >
             −
           </button>
           <span className="min-w-5 text-center text-sm">{quantity}</span>
           <button
             type="button"
-            onClick={() => updateQuantity(product.id, quantity + 1)}
-            className="flex h-6 w-6 items-center justify-center rounded-md border border-foreground/20 text-sm hover:bg-foreground/5"
+            onClick={increment}
+            disabled={isMutating || quantity >= product.stock}
+            className="flex h-6 w-6 items-center justify-center rounded-md border border-foreground/20 text-sm hover:bg-foreground/5 disabled:opacity-50"
           >
             +
           </button>
@@ -43,8 +59,9 @@ export function CartItemRow({ item }: CartItemRowProps) {
 
       <button
         type="button"
-        onClick={() => removeItem(product.id)}
-        className="self-start text-foreground/30 hover:text-red-500 transition"
+        onClick={() => void removeItem(id)}
+        disabled={isMutating}
+        className="self-start text-foreground/30 hover:text-red-500 transition disabled:opacity-50"
         aria-label="Remove"
       >
         ✕

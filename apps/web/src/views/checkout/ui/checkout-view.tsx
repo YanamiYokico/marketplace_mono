@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/entities/cart";
-import { OrderSummaryPanel } from "@/features/checkout";
+import { useSession } from "@/entities/session";
+import { OrderSummaryPanel, checkoutOrder } from "@/features/checkout";
 import { Button, Image } from "@/shared/ui";
 
 type Shipping = {
@@ -16,7 +17,8 @@ type Shipping = {
 
 export function CheckoutView() {
   const router = useRouter();
-  const { items, clearCart } = useCart();
+  const { token, hydrated } = useSession();
+  const { items, isLoading, isAuthenticated, refresh } = useCart();
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [shipping, setShipping] = useState<Shipping>({
@@ -27,15 +29,50 @@ export function CheckoutView() {
     country: "",
   });
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [orderId, setOrderId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
+  // Require auth: redirect logged-out visitors to sign in.
   useEffect(() => {
-    if (items.length === 0 && step !== 3) {
+    if (hydrated && !token) router.replace("/auth");
+  }, [hydrated, token, router]);
+
+  // Guard direct hits with an empty cart (but not on the confirmation step).
+  useEffect(() => {
+    if (isAuthenticated && !isLoading && items.length === 0 && step !== 3) {
       router.replace("/catalog");
     }
-  }, [items.length, step, router]);
+  }, [isAuthenticated, isLoading, items.length, step, router]);
 
   const inputClass =
     "h-10 rounded-lg border border-foreground/15 bg-background px-3 text-sm focus:border-foreground/40 focus:outline-none";
+
+  const placeOrder = async () => {
+    if (
+      !shipping.fullName.trim() ||
+      !shipping.address.trim() ||
+      !shipping.city.trim() ||
+      !shipping.postalCode.trim() ||
+      !shipping.country.trim()
+    )
+      return;
+    if (!token) return;
+
+    const shippingAddress = `${shipping.fullName}, ${shipping.address}, ${shipping.city}, ${shipping.postalCode}, ${shipping.country}`;
+
+    setIsPlacingOrder(true);
+    setError(null);
+    try {
+      const order = await checkoutOrder(token, shippingAddress);
+      setOrderId(order.id);
+      await refresh(); // backend cleared the cart; sync local state + header badge
+      setStep(3);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not place order");
+    } finally {
+      setIsPlacingOrder(false);
+    }
+  };
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-12">
@@ -64,7 +101,7 @@ export function CheckoutView() {
             <div className="flex flex-col gap-4">
               <div className="flex flex-col divide-y divide-foreground/5">
                 {items.map((item) => (
-                  <div key={item.product.id} className="flex items-center gap-3 py-3">
+                  <div key={item.id} className="flex items-center gap-3 py-3">
                     <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-foreground/5">
                       <Image
                         src={item.product.imageUrl}
@@ -126,28 +163,12 @@ export function CheckoutView() {
                   onChange={(e) => setShipping((p) => ({ ...p, country: e.target.value }))}
                 />
               </div>
+              {error && <p className="text-sm text-red-500">{error}</p>}
               <div className="flex items-center gap-3">
                 <Button variant="ghost" onClick={() => setStep(1)}>
                   Back
                 </Button>
-                <Button
-                  disabled={isPlacingOrder}
-                  onClick={async () => {
-                    if (
-                      !shipping.fullName.trim() ||
-                      !shipping.address.trim() ||
-                      !shipping.city.trim() ||
-                      !shipping.postalCode.trim() ||
-                      !shipping.country.trim()
-                    )
-                      return;
-                    setIsPlacingOrder(true);
-                    await new Promise((r) => setTimeout(r, 900));
-                    clearCart();
-                    setIsPlacingOrder(false);
-                    setStep(3);
-                  }}
-                >
+                <Button disabled={isPlacingOrder} onClick={placeOrder}>
                   {isPlacingOrder ? "Placing order…" : "Place order"}
                 </Button>
               </div>
@@ -163,9 +184,7 @@ export function CheckoutView() {
               <p className="text-sm text-foreground/60">
                 Thanks — your order has been placed successfully.
               </p>
-              <p className="font-mono text-sm">
-                Order #{`MKT-${Date.now().toString(36).toUpperCase()}`}
-              </p>
+              {orderId && <p className="font-mono text-sm">Order #{orderId}</p>}
               <div className="flex items-center gap-3">
                 <Button onClick={() => router.push("/catalog")}>Continue shopping</Button>
                 <Button variant="ghost" onClick={() => router.push("/dashboard")}>
