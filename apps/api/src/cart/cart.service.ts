@@ -33,7 +33,6 @@ export class CartService {
   }
 
   async addItem(userId: string, dto: AddToCartDto) {
-    console.log("AddItem: ", dto);
     const product = await this.prisma.product.findUnique({
       where: { id: dto.productId },
     });
