@@ -4,6 +4,7 @@ import type { Product } from "@/entities/product";
 export type CreateProductPayload = {
   name: string;
   price: number;
+  stock: number;
   rating?: number;
   imageUrl: string;
   categoryId?: string;

@@ -90,6 +90,7 @@ export function ProductList() {
     const payload: CreateProductPayload = {
       name: values.name,
       price: values.price,
+      stock: values.stock,
       imageUrl: values.imageUrl,
       ...(values.rating !== undefined && { rating: values.rating }),
       ...(values.categoryId && { categoryId: values.categoryId }),
@@ -201,6 +202,7 @@ export function ProductList() {
             defaultValues={{
               name: editingProduct.name,
               price: Number(editingProduct.price),
+              stock: editingProduct.stock,
               rating: editingProduct.rating ?? undefined,
               imageUrl: editingProduct.imageUrl,
               categoryId: "",
