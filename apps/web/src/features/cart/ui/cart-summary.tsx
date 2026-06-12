@@ -2,9 +2,10 @@
 
 import { useCart } from "@/entities/cart";
 import { Button } from "@/shared/ui";
+import { CheckoutButton } from "@/features/checkout";
 
 export function CartSummary() {
-  const { totalCount, totalPrice, clearCart } = useCart();
+  const { totalCount, totalPrice, clearCart, error, isMutating } = useCart();
 
   return (
     <div className="flex flex-col gap-3 border-t border-foreground/10 pt-4">
@@ -16,8 +17,9 @@ export function CartSummary() {
         <span className="font-semibold">Total</span>
         <span className="text-lg font-bold">${totalPrice.toFixed(2)}</span>
       </div>
-      <Button>Checkout</Button>
-      <Button variant="ghost" onClick={clearCart}>
+      {error && <p className="text-sm text-red-500">{error}</p>}
+      <CheckoutButton className="w-full" />
+      <Button variant="ghost" onClick={() => void clearCart()} disabled={isMutating}>
         Clear cart
       </Button>
     </div>

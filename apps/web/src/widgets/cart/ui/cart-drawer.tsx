@@ -9,7 +9,7 @@ type CartDrawerProps = {
 };
 
 export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
-  const { items } = useCart();
+  const { items, isLoading, isAuthenticated } = useCart();
 
   if (!isOpen) return null;
 
@@ -33,14 +33,22 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         </div>
 
         <div className="flex-1 overflow-y-auto px-5">
-          {items.length === 0 ? (
+          {!isAuthenticated ? (
+            <p className="py-16 text-center text-sm text-foreground/40">
+              Sign in to use your cart.
+            </p>
+          ) : isLoading && items.length === 0 ? (
+            <p className="py-16 text-center text-sm text-foreground/40">
+              Loading cart…
+            </p>
+          ) : items.length === 0 ? (
             <p className="py-16 text-center text-sm text-foreground/40">
               Your cart is empty.
             </p>
           ) : (
             <div className="divide-y divide-foreground/10">
               {items.map((item) => (
-                <CartItemRow key={item.product.id} item={item} />
+                <CartItemRow key={item.id} item={item} />
               ))}
             </div>
           )}

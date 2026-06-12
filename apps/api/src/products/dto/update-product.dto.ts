@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsInt,
   IsNumber,
   IsOptional,
   IsString,
@@ -27,6 +28,12 @@ export class UpdateProductDto {
   @Min(0)
   @Max(5)
   rating?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  stock?: number;
 
   @IsOptional()
   @IsUrl()

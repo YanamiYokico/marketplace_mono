@@ -66,6 +66,7 @@ export class ProductsController {
       name: dto.name,
       price: dto.price,
       rating: dto.rating,
+      stock: dto.stock,
       imageUrl: dto.imageUrl,
       storeId: store.id,
       categoryId: dto.categoryId,

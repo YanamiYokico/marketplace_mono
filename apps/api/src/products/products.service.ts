@@ -10,6 +10,7 @@ export type CreateProductData = {
   name: string;
   price: Prisma.Decimal | number | string;
   rating?: number;
+  stock?: number;
   imageUrl: string;
   storeId: string;
   categoryId?: string;

@@ -25,7 +25,7 @@ export function ProductForm({ categories, onSubmit, onCancel, error, defaultValu
     reset,
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
-    defaultValues: { name: "", price: 0, rating: undefined, imageUrl: "", categoryId: "", ...defaultValues },
+    defaultValues: { name: "", price: 0, stock: 0, rating: undefined, imageUrl: "", categoryId: "", ...defaultValues },
   });
 
   const handleValidSubmit = async (values: ProductFormValues) => {
@@ -60,6 +60,15 @@ export function ProductForm({ categories, onSubmit, onCancel, error, defaultValu
           placeholder="0.00"
           error={errors.price?.message}
           {...register("price", { valueAsNumber: true })}
+        />
+        <Input
+          label="Stock"
+          type="number"
+          step="1"
+          min="0"
+          placeholder="0"
+          error={errors.stock?.message}
+          {...register("stock", { valueAsNumber: true })}
         />
         <Input
           label="Rating (0–5, optional)"
