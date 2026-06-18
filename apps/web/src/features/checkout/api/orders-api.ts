@@ -18,17 +18,31 @@ export type Order = {
   updatedAt: string;
 };
 
-export async function checkoutOrder(
+export type OrderItem = {
+  id: string;
+  productId: string;
+  quantity: number;
+  price: number | string;
+  product: {
+    id: string;
+    name: string;
+    imageUrl: string;
+  };
+};
+
+export type OrderWithItems = Order & { items: OrderItem[] };
+
+async function ordersFetch<T>(
+  path: string,
   token: string,
-  shippingAddress: string,
-): Promise<Order> {
-  const res = await fetch(`${appConfig.apiUrl}/orders/checkout`, {
-    method: "POST",
+  init?: RequestInit,
+): Promise<T> {
+  const res = await fetch(`${appConfig.apiUrl}${path}`, {
+    ...init,
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
+      ...init?.headers,
     },
-    body: JSON.stringify({ shippingAddress }),
   });
 
   if (!res.ok) {
@@ -37,5 +51,32 @@ export async function checkoutOrder(
     throw new Error(Array.isArray(raw) ? raw.join(", ") : String(raw));
   }
 
-  return res.json() as Promise<Order>;
+  return res.json() as Promise<T>;
+}
+
+export function checkoutOrder(
+  token: string,
+  shippingAddress: string,
+): Promise<Order> {
+  return ordersFetch<Order>("/orders/checkout", token, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ shippingAddress }),
+  });
+}
+
+export function fetchUserOrders(token: string): Promise<OrderWithItems[]> {
+  return ordersFetch<OrderWithItems[]>("/orders", token);
+}
+
+export function payOrder(token: string, orderId: string): Promise<Order> {
+  return ordersFetch<Order>(`/orders/${orderId}/pay`, token, {
+    method: "POST",
+  });
+}
+
+export function cancelOrder(token: string, orderId: string): Promise<Order> {
+  return ordersFetch<Order>(`/orders/${orderId}/cancel`, token, {
+    method: "POST",
+  });
 }
