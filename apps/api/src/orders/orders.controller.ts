@@ -29,4 +29,9 @@ export class OrdersController {
   payOrder(@Req() req: AuthRequest, @Param('id') id: string) {
     return this.ordersService.payOrder(req.user.userId, id);
   }
+
+  @Post(':id/cancel')
+  cancelOrder(@Req() req: AuthRequest, @Param('id') id: string) {
+    return this.ordersService.cancelOrder(req.user.userId, id);
+  }
 }

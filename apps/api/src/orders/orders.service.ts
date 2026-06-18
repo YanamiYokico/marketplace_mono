@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { OrderStatus } from '@prisma/client';
 import { CartService } from '../cart/cart.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -32,6 +37,20 @@ export class OrdersService {
     });
 
     const order = await this.prisma.$transaction(async (tx) => {
+      // Reserve stock atomically: the `stock >= quantity` guard means a
+      // concurrent checkout can never push stock negative (no oversell).
+      for (const item of cart.items) {
+        const reserved = await tx.product.updateMany({
+          where: { id: item.productId, stock: { gte: item.quantity } },
+          data: { stock: { decrement: item.quantity } },
+        });
+        if (reserved.count === 0) {
+          throw new BadRequestException(
+            `Not enough stock for ${item.product.name}`,
+          );
+        }
+      }
+
       const newOrder = await tx.order.create({
         data: {
           userId,
@@ -91,22 +110,37 @@ export class OrdersService {
       throw new BadRequestException('Order is not in PENDING status');
     }
 
+    // Stock was already reserved at checkout, so paying just advances status.
+    return this.prisma.order.update({
+      where: { id: orderId },
+      data: { status: OrderStatus.PAID },
+    });
+  }
+
+  async cancelOrder(userId: string, orderId: string) {
+    const order = await this.getOrderById(userId, orderId);
+
+    if (
+      order.status !== OrderStatus.PENDING &&
+      order.status !== OrderStatus.PAID
+    ) {
+      throw new BadRequestException(
+        `Cannot cancel an order with status ${order.status}`,
+      );
+    }
+
+    // Release the stock reserved at checkout, then mark the order cancelled.
     return this.prisma.$transaction(async (tx) => {
       for (const item of order.items) {
-        const product = await tx.product.findUnique({ where: { id: item.productId } });
-        if (!product || product.stock < item.quantity) {
-          throw new BadRequestException(`Not enough stock for product ${product?.name}`);
-        }
-
         await tx.product.update({
           where: { id: item.productId },
-          data: { stock: { decrement: item.quantity } },
+          data: { stock: { increment: item.quantity } },
         });
       }
 
       return tx.order.update({
         where: { id: orderId },
-        data: { status: OrderStatus.PAID },
+        data: { status: OrderStatus.CANCELLED },
       });
     });
   }
@@ -148,9 +182,15 @@ export class OrdersService {
       throw new NotFoundException('Order not found');
     }
 
-    const hasSellerItem = order.items.some((item) => item.storeId === store.id);
-    if (!hasSellerItem) {
-      throw new BadRequestException('You do not have permission to update this order');
+    // Order status is global, so a seller may only change it when the whole
+    // order belongs to their store — not when they own just one of several items.
+    const ownsEntireOrder =
+      order.items.length > 0 &&
+      order.items.every((item) => item.storeId === store.id);
+    if (!ownsEntireOrder) {
+      throw new ForbiddenException(
+        'You can only update orders that contain only your store products',
+      );
     }
 
     return this.prisma.order.update({
