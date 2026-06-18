@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "@/entities/session";
 import { useCart } from "@/entities/cart";
 import { CartDrawer } from "@/widgets/cart";
+import { Image } from "@/shared/ui";
 import { cn } from "@/shared/lib";
 
 const navLinkClass =
@@ -25,8 +26,12 @@ export function Header() {
   return (
     <>
     <header className="flex items-center justify-between bg-[#5A8A02] px-6 py-4">
-      <Link href={user ? "/dashboard" : "/"} className="text-lg font-bold tracking-tight text-white">
-        Marketplace
+      <Link href={user ? "/dashboard" : "/"} aria-label="Marketplace home">
+        <Image
+          src="/images/header/header_logo.png"
+          alt="Marketplace"
+          className="h-9 w-auto"
+        />
       </Link>
       <nav className="flex items-center gap-2">
         <Link
@@ -41,7 +46,7 @@ export function Header() {
           className={cn(navLinkClass, "relative text-white/80 hover:text-white")}
           aria-label="Open cart"
         >
-          🛒
+          Cart
           {totalCount > 0 && (
             <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-white text-[11px] font-bold text-[#5A8A02]">
               {totalCount > 99 ? "99+" : totalCount}
@@ -51,6 +56,18 @@ export function Header() {
 
         {!hydrated ? null : user ? (
           <>
+            <Link
+              href="/orders"
+              className={cn(navLinkClass, "text-white/80 hover:text-white")}
+            >
+              Orders
+            </Link>
+            <Link
+              href="/sales"
+              className={cn(navLinkClass, "text-white/80 hover:text-white")}
+            >
+              Sales
+            </Link>
             <Link
               href="/dashboard"
               className={cn(navLinkClass, "text-white/80 hover:text-white")}
