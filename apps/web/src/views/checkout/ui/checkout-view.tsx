@@ -186,9 +186,9 @@ export function CheckoutView() {
               </p>
               {orderId && <p className="font-mono text-sm">Order #{orderId}</p>}
               <div className="flex items-center gap-3">
-                <Button onClick={() => router.push("/catalog")}>Continue shopping</Button>
-                <Button variant="ghost" onClick={() => router.push("/dashboard")}>
-                  Go to dashboard
+                <Button onClick={() => router.push("/orders")}>View my orders</Button>
+                <Button variant="ghost" onClick={() => router.push("/catalog")}>
+                  Continue shopping
                 </Button>
               </div>
             </div>
