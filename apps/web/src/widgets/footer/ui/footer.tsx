@@ -61,7 +61,7 @@ export function Footer() {
           {/* Logo */}
           <div className="flex shrink-0 flex-col items-start">
             <Image
-              src="/images/header/header_logo.png"
+              src="/images/logo.png"
               alt="Quby logo"
               width={112}
               height={112}
