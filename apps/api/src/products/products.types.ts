@@ -8,6 +8,7 @@ export type ProductsPageResult = {
 };
 
 export type FindCatalogParams = {
+  search?: string;
   categoryId?: string;
   minPrice?: number;
   maxPrice?: number;

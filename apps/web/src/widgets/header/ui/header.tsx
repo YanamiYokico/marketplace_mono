@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "@/entities/session";
 import { useCart } from "@/entities/cart";
 import { CartDrawer } from "@/widgets/cart";
+import { SearchBar } from "@/features/product-search";
 import { Image } from "@/shared/ui";
 import { cn } from "@/shared/lib";
 
@@ -28,11 +29,12 @@ export function Header() {
     <header className="flex items-center justify-between bg-[#5A8A02] px-6 py-4">
       <Link href={user ? "/dashboard" : "/"} aria-label="Marketplace home">
         <Image
-          src="/images/header/header_logo.png"
+          src="/images/logo.png"
           alt="Marketplace"
           className="h-9 w-auto"
         />
       </Link>
+      <SearchBar className="mx-6 hidden max-w-md flex-1 sm:flex" />
       <nav className="flex items-center gap-2">
         <Link
           href="/catalog"
