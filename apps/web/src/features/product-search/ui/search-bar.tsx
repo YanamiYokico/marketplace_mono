@@ -22,7 +22,7 @@ export function SearchBar({ className }: SearchBarProps) {
     <form
       onSubmit={handleSubmit}
       className={cn(
-        "flex h-11 items-center gap-2 rounded-full bg-[#5A8A02] pl-4 pr-1 transition-colors hover:bg-[#6BA003] focus-within:bg-[#6BA003]",
+        "flex h-11 items-center gap-2 rounded-full border border-[#8AA64C] bg-[#6B8E3A] pl-4 pr-1 transition-colors hover:bg-[#7A9B3D] focus-within:bg-[#7A9B3D]",
         className,
       )}
     >
@@ -51,7 +51,7 @@ export function SearchBar({ className }: SearchBarProps) {
 
       <button
         type="submit"
-        className="h-9 shrink-0 rounded-full bg-[#D4C4A0] px-5 text-[13px] font-semibold text-[#1f2a10] transition-colors hover:bg-[#DFCFA5]"
+        className="h-9 shrink-0 rounded-full bg-[#E2D6B0] px-5 text-[13px] font-semibold text-[#2f3d18] transition-colors hover:bg-[#EADFC0]"
       >
         Find
       </button>
