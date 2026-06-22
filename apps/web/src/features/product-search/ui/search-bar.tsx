@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { Image } from "@/shared/ui";
 import { cn } from "@/shared/lib";
 
 type SearchBarProps = {
@@ -26,19 +27,12 @@ export function SearchBar({ className }: SearchBarProps) {
         className,
       )}
     >
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+      <Image
+        src="/images/icons/search_btn.png"
+        alt=""
         aria-hidden
-        className="h-5 w-5 shrink-0 text-white"
-      >
-        <circle cx="11" cy="11" r="7" />
-        <path d="m21 21-4.3-4.3" />
-      </svg>
+        className="shrink-0"
+      />
 
       <input
         type="search"
@@ -51,7 +45,7 @@ export function SearchBar({ className }: SearchBarProps) {
 
       <button
         type="submit"
-        className="h-9 shrink-0 rounded-full bg-[#E2D6B0] px-5 text-[13px] font-semibold text-[#2f3d18] transition-colors hover:bg-[#EADFC0]"
+        className="h-9 shrink-0 rounded-full bg-[#C5DD98] px-5 text-[13px] font-semibold text-[#1f2a10] transition-colors hover:bg-[#DFCFA5]"
       >
         Find
       </button>
