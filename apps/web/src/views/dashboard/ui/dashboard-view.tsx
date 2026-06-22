@@ -30,7 +30,7 @@ export function DashboardView() {
     <main className="mx-auto max-w-379.5 px-6 py-12">
       <div className="overflow-hidden rounded-2xl">
         <Image
-          src="/images/dashboard/banner.png"
+          src="/images/banner.png"
           alt="Dashboard banner"
           className="h-auto w-full"
         />

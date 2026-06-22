@@ -19,7 +19,7 @@ export type CatalogFilters = {
   maxPrice: string;
 };
 
-export function useCatalog() {
+export function useCatalog(search = "") {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -35,11 +35,17 @@ export function useCatalog() {
   const [sort, setSort] = useState<SortOption>("rating_desc");
 
   const load = useCallback(
-    async (currentFilters: CatalogFilters, currentSort: SortOption, currentPage: number) => {
+    async (
+      currentFilters: CatalogFilters,
+      currentSort: SortOption,
+      currentPage: number,
+      currentSearch: string,
+    ) => {
       setIsLoading(true);
       setError(null);
       try {
         const params: FetchAllProductsParams = { page: currentPage, limit: LIMIT };
+        if (currentSearch) params.search = currentSearch;
         if (currentFilters.categoryId) params.categoryId = currentFilters.categoryId;
         if (currentFilters.minPrice !== "") params.minPrice = Number(currentFilters.minPrice);
         if (currentFilters.maxPrice !== "") params.maxPrice = Number(currentFilters.maxPrice);
@@ -65,9 +71,14 @@ export function useCatalog() {
     fetchCategories().then(setCategories).catch(() => {});
   }, []);
 
+  // Reset to the first page whenever the search term changes.
   useEffect(() => {
-    load(filters, sort, page);
-  }, [filters, sort, page, load]);
+    setPage(1);
+  }, [search]);
+
+  useEffect(() => {
+    load(filters, sort, page, search);
+  }, [filters, sort, page, search, load]);
 
   const applyFilters = (next: CatalogFilters) => {
     setFilters(next);

@@ -47,6 +47,10 @@ export class ProductsService {
 
     const where: Prisma.ProductWhereInput = {};
 
+    if (params.search) {
+      where.name = { contains: params.search, mode: 'insensitive' };
+    }
+
     if (params.categoryId) {
       where.categoryId = params.categoryId;
     }

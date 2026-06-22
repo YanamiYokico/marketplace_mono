@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { ProductCard } from "@/features/products/ui/product-card";
 import { useCatalog, CatalogSort } from "@/features/catalog";
 import { CatalogSidebar } from "@/widgets/catalog-sidebar";
@@ -11,6 +12,8 @@ import { fetchMyStore } from "@/features/products/api/store-api";
 
 export function CatalogView() {
   const { token } = useSession();
+  const searchParams = useSearchParams();
+  const search = searchParams.get("q") ?? "";
   const [myStoreId, setMyStoreId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -32,7 +35,7 @@ export function CatalogView() {
     applyFilters,
     applySort,
     setPage,
-  } = useCatalog();
+  } = useCatalog(search);
 
   return (
     <div className="mx-auto max-w-379.5 px-6 py-12">
@@ -48,7 +51,11 @@ export function CatalogView() {
           <div className="flex items-center justify-between">
             <span className="inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-foreground/[0.02] px-3 py-1.5 text-xs font-medium text-foreground/60">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden />
-              {isLoading ? "Loading…" : `Page ${page} of ${totalPages}`}
+              {isLoading
+                ? "Loading…"
+                : search
+                  ? `Results for “${search}” — page ${page} of ${totalPages}`
+                  : `Page ${page} of ${totalPages}`}
             </span>
             <CatalogSort value={sort} onChange={applySort} />
           </div>

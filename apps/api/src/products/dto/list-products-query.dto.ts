@@ -4,6 +4,7 @@ import {
   IsInt,
   IsNumber,
   IsOptional,
+  IsString,
   IsUUID,
   Max,
   Min,
@@ -13,6 +14,10 @@ export class ListProductsQueryDto {
   @IsOptional()
   @IsUUID()
   storeId?: string;
+
+  @IsOptional()
+  @IsString()
+  search?: string;
 
   @IsOptional()
   @IsUUID()

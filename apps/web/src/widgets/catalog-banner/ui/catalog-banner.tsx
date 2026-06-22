@@ -7,7 +7,7 @@ export function CatalogBanner() {
     <section className="mb-8">
       <div className="overflow-hidden rounded-2xl">
         <Image
-          src="/images/dashboard/banner.png"
+          src="/images/banner.png"
           alt="Catalog banner"
           className="h-auto w-full"
         />
