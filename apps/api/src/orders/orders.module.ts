@@ -9,5 +9,6 @@ import { SellerOrdersController } from './seller-orders.controller';
   imports: [PrismaModule, CartModule],
   controllers: [OrdersController, SellerOrdersController],
   providers: [OrdersService],
+  exports: [OrdersService],
 })
 export class OrdersModule {}
