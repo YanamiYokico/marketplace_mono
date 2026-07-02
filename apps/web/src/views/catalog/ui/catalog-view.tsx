@@ -90,7 +90,7 @@ export function CatalogView() {
           </div>
 
           {isLoading ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div
                   key={i}
@@ -107,7 +107,7 @@ export function CatalogView() {
               <p className="text-foreground/40">No products found.</p>
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {products.map((product) => (
                 <ProductCard
                   key={product.id}
