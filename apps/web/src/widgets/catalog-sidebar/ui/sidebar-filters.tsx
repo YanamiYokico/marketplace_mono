@@ -14,17 +14,16 @@ export function SidebarFilters({ onChange }: SidebarFiltersProps) {
 
   const toggle = useCallback(
     (key: string, value: string) => {
-      setSelected((prev) => {
-        const current = prev[key] ?? [];
-        const nextValues = current.includes(value)
-          ? current.filter((v) => v !== value)
-          : [...current, value];
-        const next = { ...prev, [key]: nextValues };
-        onChange?.(next);
-        return next;
-      });
+      const current = selected[key] ?? [];
+      const nextValues = current.includes(value)
+        ? current.filter((v) => v !== value)
+        : [...current, value];
+      const next = { ...selected, [key]: nextValues };
+
+      setSelected(next);
+      onChange?.(next);
     },
-    [onChange],
+    [onChange, selected],
   );
 
   return (
