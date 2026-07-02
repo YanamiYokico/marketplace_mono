@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, Logger, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OrdersService } from '../orders/orders.service';
 import Stripe from 'stripe';
@@ -58,8 +58,8 @@ export class StripeService {
         payment_method_types: ['card'],
         line_items: lineItems,
         mode: 'payment',
-        success_url: `${this.frontendUrl}/orders/${order.id}?success=true`,
-        cancel_url: `${this.frontendUrl}/orders/${order.id}?canceled=true`,
+        success_url: `${this.frontendUrl}/orders?payment=success`,
+        cancel_url: `${this.frontendUrl}/orders?payment=canceled`,
         metadata: {
           orderId: order.id,
           userId: userId,
