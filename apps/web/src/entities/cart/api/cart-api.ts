@@ -1,4 +1,5 @@
 import { appConfig } from "@/shared/config/app-config";
+import { handleUnauthorized } from "@/shared/api/session-storage";
 import type { Cart } from "../model/types";
 
 async function cartFetch(
@@ -16,6 +17,8 @@ async function cartFetch(
     },
     body: json !== undefined ? JSON.stringify(json) : rest.body,
   });
+
+  if (res.status === 401) handleUnauthorized();
 
   if (!res.ok) {
     const body = await res.json().catch(() => null);

@@ -1,12 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "@/entities/session";
 import {
   cancelOrder,
+  createStripeCheckout,
   fetchUserOrders,
-  payOrder,
   type OrderStatus,
   type OrderWithItems,
 } from "@/features/checkout";
@@ -23,6 +23,8 @@ const STATUS_STYLES: Record<OrderStatus, string> = {
 
 export function OrdersView() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const payment = searchParams.get("payment");
   const { token, hydrated } = useSession();
 
   const [orders, setOrders] = useState<OrderWithItems[]>([]);
@@ -58,11 +60,11 @@ export function OrdersView() {
     setPayingId(orderId);
     setError(null);
     try {
-      await payOrder(token, orderId);
-      await load();
+      // Redirect to Stripe-hosted Checkout; Stripe returns to /orders?payment=...
+      const { url } = await createStripeCheckout(token, orderId);
+      window.location.href = url;
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Payment failed");
-    } finally {
+      setError(e instanceof Error ? e.message : "Could not start payment");
       setPayingId(null);
     }
   };
@@ -87,6 +89,17 @@ export function OrdersView() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
       <h1 className="mb-8 text-2xl font-bold">My orders</h1>
+
+      {payment === "success" && (
+        <p className="mb-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+          ✓ Payment successful — your order will be marked as paid shortly.
+        </p>
+      )}
+      {payment === "canceled" && (
+        <p className="mb-4 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-700">
+          Payment was canceled. You can try paying again.
+        </p>
+      )}
 
       {error && <p className="mb-4 text-sm text-red-500">{error}</p>}
 

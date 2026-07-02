@@ -7,8 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import type { User } from "@/entities/user";
-
-const TOKEN_KEY = "mp_auth";
+import { AUTH_TOKEN_KEY as TOKEN_KEY } from "@/shared/api/session-storage";
 
 export type SessionState = {
   user: User | null;
