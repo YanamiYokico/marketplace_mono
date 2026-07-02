@@ -1,10 +1,13 @@
 import { appConfig } from "@/shared/config/app-config";
+import { handleUnauthorized } from "@/shared/api/session-storage";
 
 export async function apiFetch<T>(
   path: string,
   init?: RequestInit,
 ): Promise<T> {
   const response = await fetch(`${appConfig.apiUrl}${path}`, init);
+
+  if (response.status === 401) handleUnauthorized();
 
   if (!response.ok) {
     const body = await response.json().catch(() => null);

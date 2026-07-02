@@ -9,6 +9,7 @@ export type ProductsPageResult = {
 
 export type FindCatalogParams = {
   search?: string;
+  tags?: string[];
   categoryId?: string;
   minPrice?: number;
   maxPrice?: number;

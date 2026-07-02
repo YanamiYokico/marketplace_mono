@@ -6,6 +6,7 @@ export {
   payOrder,
   cancelOrder,
 } from "./api/orders-api";
+export { createStripeCheckout } from "./api/stripe-api";
 export type {
   Order,
   OrderStatus,

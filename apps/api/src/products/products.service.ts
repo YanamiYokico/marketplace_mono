@@ -11,6 +11,7 @@ export type CreateProductData = {
   price: Prisma.Decimal | number | string;
   rating?: number;
   stock?: number;
+  tags?: string[];
   imageUrl: string;
   storeId: string;
   categoryId?: string;
@@ -49,6 +50,11 @@ export class ProductsService {
 
     if (params.search) {
       where.name = { contains: params.search, mode: 'insensitive' };
+    }
+
+    if (params.tags && params.tags.length > 0) {
+      // Product must carry every selected tag (narrowing filter).
+      where.tags = { hasEvery: params.tags };
     }
 
     if (params.categoryId) {
