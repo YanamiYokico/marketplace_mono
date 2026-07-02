@@ -1,5 +1,6 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
+  IsArray,
   IsIn,
   IsInt,
   IsNumber,
@@ -18,6 +19,13 @@ export class ListProductsQueryDto {
   @IsOptional()
   @IsString()
   search?: string;
+
+  // A single ?tags=X arrives as a string; normalize to an array.
+  @IsOptional()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+  @IsArray()
+  @IsString({ each: true })
+  tags?: string[];
 
   @IsOptional()
   @IsUUID()

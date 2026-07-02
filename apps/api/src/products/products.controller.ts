@@ -36,6 +36,7 @@ export class ProductsController {
 
     return this.productsService.findCatalog({
       search: query.search,
+      tags: query.tags,
       categoryId: query.categoryId,
       minPrice: query.minPrice,
       maxPrice: query.maxPrice,
@@ -68,6 +69,7 @@ export class ProductsController {
       price: dto.price,
       rating: dto.rating,
       stock: dto.stock,
+      tags: dto.tags,
       imageUrl: dto.imageUrl,
       storeId: store.id,
       categoryId: dto.categoryId,

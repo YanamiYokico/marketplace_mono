@@ -17,6 +17,7 @@ export type CatalogFilters = {
   categoryId: string;
   minPrice: string;
   maxPrice: string;
+  tags: string[];
 };
 
 export function useCatalog(search = "") {
@@ -31,6 +32,7 @@ export function useCatalog(search = "") {
     categoryId: "",
     minPrice: "",
     maxPrice: "",
+    tags: [],
   });
   const [sort, setSort] = useState<SortOption>("rating_desc");
 
@@ -46,6 +48,7 @@ export function useCatalog(search = "") {
       try {
         const params: FetchAllProductsParams = { page: currentPage, limit: LIMIT };
         if (currentSearch) params.search = currentSearch;
+        if (currentFilters.tags.length > 0) params.tags = currentFilters.tags;
         if (currentFilters.categoryId) params.categoryId = currentFilters.categoryId;
         if (currentFilters.minPrice !== "") params.minPrice = Number(currentFilters.minPrice);
         if (currentFilters.maxPrice !== "") params.maxPrice = Number(currentFilters.maxPrice);

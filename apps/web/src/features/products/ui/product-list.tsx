@@ -92,6 +92,7 @@ export function ProductList() {
       price: values.price,
       stock: values.stock,
       imageUrl: values.imageUrl,
+      tags: values.tags,
       ...(values.rating !== undefined && { rating: values.rating }),
       ...(values.categoryId && { categoryId: values.categoryId }),
     };
@@ -206,6 +207,7 @@ export function ProductList() {
               rating: editingProduct.rating ?? undefined,
               imageUrl: editingProduct.imageUrl,
               categoryId: "",
+              tags: editingProduct.tags ?? [],
             }}
             onSubmit={handleEditProduct}
             onCancel={() => { setEditingProduct(null); setEditError(undefined); }}

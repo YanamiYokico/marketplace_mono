@@ -8,10 +8,12 @@ export type CreateProductPayload = {
   rating?: number;
   imageUrl: string;
   categoryId?: string;
+  tags?: string[];
 };
 
 export type FetchAllProductsParams = {
   search?: string;
+  tags?: string[];
   categoryId?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -37,6 +39,7 @@ export async function fetchAllProducts(
 ): Promise<ProductsPage> {
   const query = new URLSearchParams();
   if (params.search) query.set("search", params.search);
+  if (params.tags) params.tags.forEach((t) => query.append("tags", t));
   if (params.categoryId) query.set("categoryId", params.categoryId);
   if (params.minPrice !== undefined) query.set("minPrice", String(params.minPrice));
   if (params.maxPrice !== undefined) query.set("maxPrice", String(params.maxPrice));
