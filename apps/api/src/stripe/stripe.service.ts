@@ -21,7 +21,6 @@ export class StripeService {
     }
 
     if (secretKey) {
-      // Initialize Stripe SDK
       this.stripe = new Stripe(secretKey, {
         apiVersion: '2026-05-27.dahlia' as any,
       });
@@ -48,7 +47,7 @@ export class StripeService {
           name: item.product.name,
           images: item.product.imageUrl ? [item.product.imageUrl] : [],
         },
-        unit_amount: Math.round(Number(item.price) * 100), // Stripe expects amounts in cents
+        unit_amount: Math.round(Number(item.price) * 100),
       },
       quantity: item.quantity,
     }));

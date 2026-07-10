@@ -7,7 +7,7 @@ type AuthRequest = { user: { userId: string } };
 
 @Controller('stripe')
 export class StripeController {
-  constructor(private readonly stripeService: StripeService) {}
+  constructor(private readonly stripeService: StripeService) { }
 
   @UseGuards(JwtAuthGuard)
   @Post('create-checkout-session/:orderId')
@@ -25,14 +25,14 @@ export class StripeController {
   ) {
     console.log('--- WEBHOOK RECEIVED ---');
     console.log('Signature:', signature ? 'Present' : 'Missing');
-    
+
     if (!signature) {
       throw new BadRequestException('No signature provided');
     }
-    
+
     const rawBody = req.rawBody;
     console.log('RawBody present:', !!rawBody);
-    
+
     if (!rawBody) {
       throw new BadRequestException('No raw body available. Make sure rawBody is enabled in NestFactory.');
     }
