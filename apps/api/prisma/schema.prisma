@@ -55,15 +55,27 @@ model Store {
   @@map("stores")
 }
 
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
 model Product {
-  id         String      @id @default(uuid())
-  name       String
-  price      Decimal     @db.Decimal(10, 2)
-  rating     Float       @default(0)
-  stock      Int         @default(0)
-  tags       String[]    @default([])
-  imageUrl   String      @map("image_url")
-  storeId    String      @map("store_id")
+  id               String        @id @default(uuid())
+  name             String
+  shortDescription String?       @map("short_description")
+  description      String?
+  status           ProductStatus @default(DRAFT)
+  sku              String?       @unique
+  brand            String?
+  price            Decimal       @db.Decimal(10, 2)
+  rating           Float         @default(0)
+  stock            Int           @default(0)
+  tags             String[]      @default([])
+  imageUrl         String        @map("image_url")
+  images           String[]      @default([])
+  storeId          String        @map("store_id")
   categoryId String?     @map("category_id")
   store      Store       @relation(fields: [storeId], references: [id], onDelete: Cascade)
   category   Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
