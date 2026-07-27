@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { Product } from "@/entities/product";
 import type { Category } from "@/entities/category";
 import { fetchCategories } from "@/entities/category";
+import { useSession } from "@/entities/session";
 import {
   fetchAllProducts,
   type FetchAllProductsParams,
@@ -21,6 +22,7 @@ export type CatalogFilters = {
 };
 
 export function useCatalog(search = "") {
+  const { token } = useSession();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,6 +44,7 @@ export function useCatalog(search = "") {
       currentSort: SortOption,
       currentPage: number,
       currentSearch: string,
+      currentToken: string | null,
     ) => {
       setIsLoading(true);
       setError(null);
@@ -57,7 +60,7 @@ export function useCatalog(search = "") {
         else if (currentSort === "price_desc") { params.sortBy = "price"; params.sortOrder = "desc"; }
         else if (currentSort === "rating_desc") { params.sortBy = "rating"; params.sortOrder = "desc"; }
 
-        const result = await fetchAllProducts(params);
+        const result = await fetchAllProducts(params, currentToken ?? undefined);
         setProducts(result.data);
         setTotalPages(result.totalPages);
       } catch (e) {
@@ -80,8 +83,8 @@ export function useCatalog(search = "") {
   }, [search]);
 
   useEffect(() => {
-    load(filters, sort, page, search);
-  }, [filters, sort, page, search, load]);
+    load(filters, sort, page, search, token);
+  }, [filters, sort, page, search, token, load]);
 
   const applyFilters = (next: CatalogFilters) => {
     setFilters(next);

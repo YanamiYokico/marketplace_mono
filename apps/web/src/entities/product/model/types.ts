@@ -7,6 +7,7 @@ export type Product = {
   tags: string[];
   imageUrl: string;
   storeId: string;
+  isFavorite?: boolean;
   createdAt: string;
   updatedAt: string;
 };

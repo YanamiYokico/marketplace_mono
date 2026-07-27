@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Product } from "@/entities/product";
 import { Image } from "@/shared/ui";
 import { AddToCartButton } from "@/features/cart";
+import { FavoriteButton } from "@/features/favorites";
 
 type ProductCardProps = {
   product: Product;
@@ -41,18 +42,11 @@ export function ProductCard({ product, isOwner, onEdit, onDelete }: ProductCardP
           alt={product.name}
           className="h-[327px] w-full rounded-xl bg-black/[0.04] object-cover"
         />
-        <button
-          type="button"
-          aria-label="Add to favorites"
-          className="absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/70 transition hover:bg-white"
-        >
-          <Image
-            src="/images/icons/like_icon.svg"
-            alt=""
-            aria-hidden
-            className="h-5 w-5"
-          />
-        </button>
+        <FavoriteButton
+          productId={product.id}
+          initialFavorite={product.isFavorite}
+          className="absolute bottom-2 right-2"
+        />
       </div>
 
       <div className="flex flex-1 flex-col gap-2 px-4 pb-4">

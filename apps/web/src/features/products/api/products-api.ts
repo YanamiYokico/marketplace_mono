@@ -36,6 +36,7 @@ export async function fetchProductsByStore(storeId: string): Promise<Product[]> 
 
 export async function fetchAllProducts(
   params: FetchAllProductsParams = {},
+  token?: string,
 ): Promise<ProductsPage> {
   const query = new URLSearchParams();
   if (params.search) query.set("search", params.search);
@@ -48,7 +49,10 @@ export async function fetchAllProducts(
   if (params.page !== undefined) query.set("page", String(params.page));
   if (params.limit !== undefined) query.set("limit", String(params.limit));
   const qs = query.toString();
-  return apiFetch(`/products${qs ? `?${qs}` : ""}`);
+  return apiFetch(
+    `/products${qs ? `?${qs}` : ""}`,
+    token ? { headers: { Authorization: `Bearer ${token}` } } : undefined,
+  );
 }
 
 export async function createProduct(
