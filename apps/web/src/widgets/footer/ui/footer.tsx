@@ -24,7 +24,7 @@ const columns = [
     ],
   },
   {
-    heading: "Help & Contacts",
+    heading: "Help & contacts",
     links: [
       { label: "Seller center", href: "/help/seller" },
       { label: "Contact Us", href: "/help/contact" },
@@ -44,7 +44,7 @@ const columns = [
     ],
   },
   {
-    heading: "Social Media",
+    heading: "Social media",
     links: [
       { label: "Instagram", href: "https://instagram.com" },
       { label: "Facebook", href: "https://facebook.com" },
@@ -55,55 +55,43 @@ const columns = [
 
 export function Footer() {
   return (
-    <footer className="bg-[#5A8A02] text-white">
-      <div className="mx-auto max-w-[1440px] px-6 py-16">
-        <div className="flex gap-12 lg:gap-16">
-          {/* Logo */}
-          <div className="flex shrink-0 flex-col items-start">
-            <Image
-              src="/images/logo.png"
-              alt="Quby logo"
-              width={112}
-              height={112}
-              className="rounded-2xl"
-            />
-            <span className="mt-4 text-xl font-bold tracking-tight">Quby</span>
-            <span className="mt-1 text-sm text-white/50">Your marketplace</span>
-          </div>
-
-          {/* Nav columns */}
-          <nav
-            aria-label="Footer navigation"
-            className="grid flex-1 grid-cols-2 gap-10 sm:grid-cols-3 lg:grid-cols-5"
-          >
-            {columns.map((col) => (
-              <div key={col.heading}>
-                <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-white/40">
-                  {col.heading}
-                </p>
-                <ul className="flex flex-col gap-3">
-                  {col.links.map((link) => (
-                    <li key={link.label}>
-                      <Link
-                        href={link.href}
-                        className="text-sm text-white/75 transition hover:text-white"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </nav>
+    <footer className="bg-[#5A8A02] font-[family-name:var(--font-poppins)] text-white">
+      <div className="mx-auto grid max-w-[1120px] grid-cols-1 gap-10 px-6 py-14 sm:grid-cols-[170px_1fr] sm:gap-14 lg:px-0">
+        <div className="flex flex-col items-start justify-between">
+          <Image
+            src="/images/icons/header_quby_mark.svg"
+            alt="Quby"
+            width={170}
+            height={202}
+            className="h-auto w-[170px]"
+          />
+          <p className="mt-8 text-sm">Copyright</p>
         </div>
 
-        <div className="mt-14 border-t border-white/10 pt-6 flex items-center justify-between">
-          <p className="text-xs text-white/35">
-            © {new Date().getFullYear()} Quby. All rights reserved.
-          </p>
-          <p className="text-xs text-white/35">Made with care</p>
-        </div>
+        <nav
+          aria-label="Footer navigation"
+          className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-5 lg:gap-x-12"
+        >
+          {columns.map((column) => (
+            <div key={column.heading}>
+              <p className="mb-3 text-[16px] font-normal leading-5">
+                {column.heading}
+              </p>
+              <ul className="flex flex-col gap-2 text-[14px] leading-[18px]">
+                {column.links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="transition-opacity hover:opacity-70"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
       </div>
     </footer>
   );

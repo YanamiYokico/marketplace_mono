@@ -23,7 +23,7 @@ export function SearchBar({ className }: SearchBarProps) {
     <form
       onSubmit={handleSubmit}
       className={cn(
-        "flex h-11 items-center gap-2 rounded-full border border-[#8AA64C] bg-[#6B8E3A] pl-4 pr-1 transition-colors hover:bg-[#7A9B3D] focus-within:bg-[#7A9B3D]",
+        "flex h-[31px] items-center gap-2 rounded-full border border-white bg-transparent pl-2 font-[family-name:var(--font-poppins)] focus-within:bg-white/10",
         className,
       )}
     >
@@ -31,7 +31,7 @@ export function SearchBar({ className }: SearchBarProps) {
         src="/images/icons/search_btn.png"
         alt=""
         aria-hidden
-        className="shrink-0"
+        className="h-4 w-4 shrink-0 object-contain"
       />
 
       <input
@@ -40,12 +40,12 @@ export function SearchBar({ className }: SearchBarProps) {
         onChange={(e) => setValue(e.target.value)}
         placeholder="Search"
         aria-label="Search products"
-        className="h-full min-w-0 flex-1 bg-transparent text-[15px] font-medium text-white outline-none placeholder:text-white/90 [&::-webkit-search-cancel-button]:appearance-none"
+        className="h-full min-w-0 flex-1 bg-transparent text-[18px] font-normal text-white outline-none placeholder:text-white [&::-webkit-search-cancel-button]:appearance-none"
       />
 
       <button
         type="submit"
-        className="h-9 shrink-0 rounded-full bg-[#C5DD98] px-5 text-[13px] font-semibold text-[#1f2a10] transition-colors hover:bg-[#DFCFA5]"
+        className="h-[29px] w-[77px] shrink-0 rounded-full bg-[#C5DD98] text-[16px] font-normal text-black transition-colors hover:bg-[#d5e9b1]"
       >
         Find
       </button>
