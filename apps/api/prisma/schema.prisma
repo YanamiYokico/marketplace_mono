@@ -27,6 +27,7 @@ model User {
   store                    Store?
   cart                     Cart?
   orders                   Order[]
+  favorites                Favorite[]
 
   @@map("users")
 }
@@ -54,20 +55,33 @@ model Store {
   @@map("stores")
 }
 
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
 model Product {
-  id         String      @id @default(uuid())
-  name       String
-  price      Decimal     @db.Decimal(10, 2)
-  rating     Float       @default(0)
-  stock      Int         @default(0)
-  tags       String[]    @default([])
-  imageUrl   String      @map("image_url")
-  storeId    String      @map("store_id")
+  id               String        @id @default(uuid())
+  name             String
+  shortDescription String?       @map("short_description")
+  description      String?
+  status           ProductStatus @default(DRAFT)
+  sku              String?       @unique
+  brand            String?
+  price            Decimal       @db.Decimal(10, 2)
+  rating           Float         @default(0)
+  stock            Int           @default(0)
+  tags             String[]      @default([])
+  imageUrl         String        @map("image_url")
+  images           String[]      @default([])
+  storeId          String        @map("store_id")
   categoryId String?     @map("category_id")
   store      Store       @relation(fields: [storeId], references: [id], onDelete: Cascade)
   category   Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   cartItems  CartItem[]
   orderItems OrderItem[]
+  favorites  Favorite[]
   createdAt  DateTime    @default(now()) @map("created_at")
   updatedAt  DateTime    @updatedAt @map("updated_at")
 
@@ -140,4 +154,16 @@ enum OrderStatus {
   SHIPPED
   DELIVERED
   CANCELLED
+}
+
+model Favorite {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  productId String   @map("product_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, productId])
+  @@map("favorites")
 }

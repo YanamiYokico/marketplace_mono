@@ -13,6 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
 import { StoresService } from '../stores/stores.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ListProductsQueryDto } from './dto/list-products-query.dto';
@@ -20,6 +21,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
 
 type AuthRequest = { user: { userId: string } };
+type OptionalAuthRequest = { user?: { userId: string } };
 
 @Controller('products')
 export class ProductsController {
@@ -28,8 +30,9 @@ export class ProductsController {
     private readonly storesService: StoresService,
   ) {}
 
+  @UseGuards(OptionalJwtAuthGuard)
   @Get()
-  findAll(@Query() query: ListProductsQueryDto) {
+  findAll(@Req() req: OptionalAuthRequest, @Query() query: ListProductsQueryDto) {
     if (query.storeId) {
       return this.productsService.findByStoreId(query.storeId);
     }
@@ -44,6 +47,7 @@ export class ProductsController {
       sortOrder: query.sortOrder,
       page: query.page,
       limit: query.limit,
+      userId: req.user?.userId,
     });
   }
 

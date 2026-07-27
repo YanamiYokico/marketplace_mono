@@ -24,7 +24,7 @@ const DEFAULT_LIMIT = 20;
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   create(data: CreateProductData): Promise<Product> {
     return this.prisma.product.create({ data });
@@ -80,12 +80,23 @@ export class ProductsService {
           orderBy,
           skip,
           take: limit,
+          include: params.userId
+            ? { favorites: { where: { userId: params.userId } } }
+            : undefined,
         }),
         tx.product.count({ where }),
       ]);
 
+      const formattedData = data.map((item: any) => {
+        const { favorites, ...rest } = item;
+        return {
+          ...rest,
+          isFavorite: favorites ? favorites.length > 0 : false,
+        };
+      });
+
       return {
-        data,
+        data: formattedData,
         total,
         page,
         totalPages: total === 0 ? 1 : Math.ceil(total / limit),

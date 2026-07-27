@@ -17,4 +17,5 @@ export type FindCatalogParams = {
   sortOrder?: 'asc' | 'desc';
   page?: number;
   limit?: number;
+  userId?: string;
 };

@@ -11,7 +11,7 @@ import { ProductsModule } from './products/products.module';
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
 import { StripeModule } from './stripe/stripe.module';
-
+import { FavoritesModule } from './favorites/favorites.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,6 +26,7 @@ import { StripeModule } from './stripe/stripe.module';
     CartModule,
     OrdersModule,
     StripeModule,
+    FavoritesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
