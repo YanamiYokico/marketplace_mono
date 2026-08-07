@@ -22,6 +22,7 @@ model User {
   isEmailVerified          Boolean   @default(false) @map("is_email_verified")
   emailVerificationToken   String?   @map("email_verification_token")
   emailVerificationExpires DateTime? @map("email_verification_expires")
+  isBlocked                Boolean   @default(false) @map("is_blocked")
   createdAt                DateTime  @default(now()) @map("created_at")
   updatedAt                DateTime  @updatedAt @map("updated_at")
   store                    Store?
