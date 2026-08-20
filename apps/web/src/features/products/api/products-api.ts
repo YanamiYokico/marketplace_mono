@@ -30,6 +30,10 @@ export type ProductsPage = {
   totalPages: number;
 };
 
+export async function fetchProductById(id: string): Promise<Product> {
+  return apiFetch(`/products/${id}`);
+}
+
 export async function fetchProductsByStore(storeId: string): Promise<Product[]> {
   return apiFetch(`/products?storeId=${storeId}`);
 }

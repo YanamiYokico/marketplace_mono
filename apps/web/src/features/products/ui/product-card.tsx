@@ -37,11 +37,13 @@ export function ProductCard({ product, isOwner, onEdit, onDelete }: ProductCardP
     <div className="flex h-[521px] w-full max-w-[361px] flex-col rounded-2xl bg-[#C5DD98] font-[family-name:var(--font-poppins)] transition hover:-translate-y-0.5 hover:shadow-lg">
       {/* Image 327px tall (width fills card minus margins); like icon pinned bottom-right */}
       <div className="relative" style={{ margin: "32px 38px 14px 32px" }}>
-        <Image
-          src={product.imageUrl}
-          alt={product.name}
-          className="h-[327px] w-full rounded-xl bg-black/[0.04] object-cover"
-        />
+        <Link href={`/product/${product.id}`} aria-label={product.name}>
+          <Image
+            src={product.imageUrl}
+            alt={product.name}
+            className="h-[327px] w-full rounded-xl bg-black/[0.04] object-cover"
+          />
+        </Link>
         <FavoriteButton
           productId={product.id}
           initialFavorite={product.isFavorite}
@@ -50,11 +52,14 @@ export function ProductCard({ product, isOwner, onEdit, onDelete }: ProductCardP
       </div>
 
       <div className="flex flex-1 flex-col gap-2 px-4 pb-4">
-        <div className="flex h-[60px] items-center justify-center">
-          <h3 className="line-clamp-2 text-center text-[20px] font-normal leading-none text-black/90">
+        <Link
+          href={`/product/${product.id}`}
+          className="flex h-[60px] items-center justify-center"
+        >
+          <h3 className="line-clamp-2 text-center text-[20px] font-normal leading-none text-black/90 transition hover:underline">
             {product.name}
           </h3>
-        </div>
+        </Link>
 
         <StarRating value={Number(product.rating ?? 0)} />
 
